@@ -1,957 +1,466 @@
-<!DOCTYPE html>
-<html lang="en">
-<!--
-Developer : wiz64 ,
-Contribute: https://github.com/wiz64/saavn-web-ui ,
-Don't forget to star the repo
-Re-Designed by gaganmalvi & Gemini
--->
-<h
+  <!DOCTYPE html>
+  <html lang="en">
+  <!--
+  Original Developer: wiz64
+  Contribute: https://github.com/wiz64/saavn-web-ui
+  UI Upgrade by Monica AI Assistant
+  -->
+  <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Saverino - Upgraded</title>
+    <title>Saverino</title>
     <meta name="description" content="Saavn Music Player is an Ad-Free Music Player, High Quality MP3 Songs with Metadata support, and a Modern Design. A large library of songs. developed by wiz64">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bitter:400,700&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- <link rel="stylesheet" href="assets/css/styles.css"> --> <!-- Original styles commented out or integrated below -->
     <style>
-        :root {
-            --primary-color: #2ecc71; /* Vibrant green */
-            --secondary-color: #34495e; /* Dark blue-grey */
-            --background-color: #1a1a1a; /* Darker background */
-            --text-color: #ecf0f1; /* Light grey text */
-            --card-background: #2c3e50; /* Slightly lighter card background */
-            --hover-color: #36d986;
-        }
-
-        body {
-            padding-bottom: 100px; /* Increased padding for fixed player */
-            background: var(--background-color);
-            color: var(--text-color);
-            font-family: 'Source Sans Pro', sans-serif;
-            transition: background-color 0.3s ease;
-        }
-
-        /* Header */
-        .header-dark {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, #1e2b38 100%);
-            color: var(--text-color);
-            padding: 15px 0px 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .navbar {
-            margin-bottom: 20px;
-        }
-
-        .navbar-brand {
-            font-family: 'Bitter', serif;
-            font-weight: 700;
-            font-size: 1.8em;
-            color: var(--primary-color) !important;
-            transition: color 0.3s ease;
-        }
-        .navbar-brand:hover {
-            color: var(--hover-color) !important;
-        }
-
-        .navbar-toggler {
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-        .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(236, 240, 241, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-        }
-
-        .nav-item .btn-primary {
-            background-color: var(--primary-color);
-            border: none;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            font-weight: 600;
-        }
-        .nav-item .btn-primary:hover {
-            background-color: var(--hover-color);
-            transform: translateY(-2px);
-        }
-
-        .header-dark h1 {
-            font-family: 'Bitter', serif;
-            font-weight: 700;
-            font-size: 3em;
-            margin-bottom: 10px;
-            color: var(--text-color);
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
-        }
-
-        .header-dark h3 {
-            font-family: 'Bitter', serif;
-            color: rgba(236, 240, 241, 0.85);
-            font-size: 1.5em;
-            margin-bottom: 15px;
-        }
-
-        .header-dark p {
-            color: rgba(236, 240, 241, 0.75);
-            font-size: 1.1em;
-        }
-
-        /* Main Content Area */
-        .highlight-clean {
-            background: var(--background-color);
-            color: var(--text-color);
-            padding-top: 30px;
-        }
-
-        /* Bitrate Selector */
-        #saavn-bitrate {
-            background-color: var(--card-background);
-            color: var(--text-color);
-            border: 1px solid var(--secondary-color);
-            padding: 8px 12px;
-            border-radius: 5px;
-            font-size: 1em;
-            margin-bottom: 20px;
-            cursor: pointer;
-            transition: border-color 0.3s ease;
-        }
-        #saavn-bitrate:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-
-        /* Search Form */
-        .search-form-container {
-            width: 95%;
-            max-width: 700px; /* Limit max width */
-            margin: 0 auto 25px auto;
-            display: flex;
-            background-color: var(--card-background);
-            border-radius: 25px; /* Rounded corners */
-            padding: 5px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        #saavn-search-box {
-            flex-grow: 1;
-            border: none;
-            background: transparent;
-            color: var(--text-color);
-            padding: 10px 15px;
-            font-size: 1.1em;
-            border-radius: 20px 0 0 20px;
-        }
-        #saavn-search-box:focus {
-            outline: none;
-        }
-        #saavn-search-box::placeholder {
-            color: rgba(236, 240, 241, 0.6);
-        }
-
-        #saavn-search-trigger {
-            background-color: var(--primary-color);
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 0 20px 20px 0;
-            cursor: pointer;
-            font-size: 1.1em;
-            transition: background-color 0.3s ease;
-        }
-        #saavn-search-trigger:hover {
-            background-color: var(--hover-color);
-        }
-
-        /* Results Section */
-        h5.text-uppercase {
-            color: var(--primary-color);
-            font-weight: 700;
-            margin-top: 30px;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
-        }
-
-        #saavn-results {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center; /* Center items */
-            gap: 20px; /* Add gap between items */
-            margin-bottom: 30px;
-            padding: 0 10px; /* Add some horizontal padding */
-        }
-
-        /* Song Container Styling (Placeholder - needs JS interaction) */
+      :root {
+        --primary-color: #8c52ff;
+        --secondary-color: #5e17eb;
+        --dark-bg: #121212;
+        --card-bg: #1e1e1e;
+        --text-primary: #ffffff;
+        --text-secondary: #b3b3b3;
+      }
+      
+      body {
+        font-family: 'Poppins', sans-serif;
+        background: var(--dark-bg);
+        color: var(--text-primary);
+        padding-bottom: 100px;
+      }
+      
+      .header-dark {
+        background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+        padding: 30px 0;
+        border-radius: 0 0 25px 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      }
+      
+      .navbar-brand {
+        font-weight: 700;
+        font-size: 24px;
+        color: white !important;
+      }
+      
+      .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        border-radius: 50px;
+        padding: 8px 20px;
+        transition: all 0.3s ease;
+      }
+      
+      .btn-primary:hover {
+        background-color: var(--secondary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(94, 23, 235, 0.3);
+      }
+      
+      #saavn-search-box {
+        border-radius: 50px 0 0 50px;
+        padding: 12px 20px;
+        border: none;
+        background: rgba(255,255,255,0.1);
+        color: white;
+        backdrop-filter: blur(10px);
+      }
+      
+      #saavn-search-box::placeholder {
+        color: rgba(255,255,255,0.6);
+      }
+      
+      #saavn-search-trigger {
+        border-radius: 0 50px 50px 0;
+        padding: 12px 25px;
+      }
+      
+      #saavn-results {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 30px;
+      }
+      
+      .song-container {
+        background: var(--card-bg);
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      }
+      
+      .song-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+      }
+      
+      .search-toggle {
+        background: rgba(255,255,255,0.1);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 8px 15px;
+        margin: 5px;
+        transition: all 0.3s ease;
+        font-size: 14px;
+      }
+      
+      .search-toggle:hover {
+        background: var(--primary-color);
+        transform: translateY(-2px);
+      }
+      
+      .button-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin: 20px 0;
+      }
+      
+      #loadmore {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 10px 20px;
+        margin: 20px auto;
+        display: block;
+        transition: all 0.3s ease;
+        width: 80%;
+        max-width: 300px;
+      }
+      
+      #loadmore:hover {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+      }
+      
+      #audio-player {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(30, 30, 30, 0.8);
+        backdrop-filter: blur(10px);
+        padding: 10px 20px;
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+        z-index: 1000;
+      }
+      
+      #player-image {
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      }
+      
+      #player-name {
+        font-weight: 600;
+        font-size: 16px;
+      }
+      
+      #player-album {
+        color: var(--text-secondary);
+        font-size: 14px;
+      }
+      
+      audio::-webkit-media-controls-panel {
+        background-color: rgba(255,255,255,0.1);
+      }
+      
+      audio::-webkit-media-controls-play-button {
+        background-color: var(--primary-color);
+        border-radius: 50%;
+      }
+      
+      .float-button {
+        width: 50px !important;
+        height: 50px !important;
+        border-radius: 50%;
+        background: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        transition: all 0.3s ease;
+      }
+      
+      .float-button:hover {
+        transform: scale(1.1);
+      }
+      
+      .float-button a {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        background: none;
+        border: none;
+      }
+      
+      .float-button img {
+        width: 24px;
+        height: 24px;
+        filter: invert(1);
+      }
+      
+      .mpopup {
+        background: rgba(0,0,0,0.8);
+        backdrop-filter: blur(10px);
+      }
+      
+      .modal-content {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 20px;
+        color: var(--text-primary);
+        max-width: 800px;
+        margin: 30px auto;
+      }
+      
+      .modal-header {
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 15px;
+      }
+      
+      .close {
+        color: var(--text-primary);
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      
+      #download-list li {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+      }
+      
+      #download-list img {
+        border-radius: 10px;
+        margin-right: 15px;
+      }
+      
+      #saavn-bitrate {
+        background: rgba(255,255,255,0.1);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 8px 15px;
+        margin: 10px 0;
+      }
+      
+      .footer {
+        color: var(--text-secondary);
+        font-size: 12px;
+        margin-top: 40px;
+        padding: 0 20px;
+      }
+      
+      /* Responsive adjustments */
+      @media screen and (min-width: 992px) {
         .song-container {
-            background-color: var(--card-background);
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            overflow: hidden; /* Ensure content stays within bounds */
-            cursor: pointer;
-            display: flex; /* Use flexbox for layout */
-            flex-direction: column; /* Stack elements vertically */
-            align-items: center; /* Center items horizontally */
-            text-align: center;
+          width: calc(33.33% - 20px);
         }
-        .song-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+      }
+      
+      @media screen and (min-width: 768px) and (max-width: 991px) {
+        .song-container {
+          width: calc(50% - 20px);
         }
-        .song-container img {
-            width: 100%; /* Make image responsive */
-            max-width: 150px; /* Limit max image size */
-            height: auto;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            object-fit: cover;
+      }
+      
+      @media screen and (max-width: 767px) {
+        .song-container {
+          width: calc(100% - 20px);
         }
-        .song-container h6 { /* Song Title */
-            font-size: 1.1em;
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: var(--text-color);
-            /* Ellipsis for long text */
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
+        
+        .header-dark {
+          padding: 20px 0;
         }
-        .song-container p { /* Album/Artist */
-            font-size: 0.9em;
-            color: rgba(236, 240, 241, 0.7);
-            margin-bottom: 10px;
-            /* Ellipsis for long text */
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
-        }
-        .song-container .btn-group .btn {
-             margin: 2px; /* Spacing between buttons */
-             font-size: 0.9em;
-             padding: 5px 10px;
-        }
-
-
-        /* Load More Button */
-        #loadmore {
-            background-color: var(--secondary-color);
-            color: var(--text-color);
-            border: 1px solid var(--primary-color);
-            padding: 12px 25px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: 600;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            display: block; /* Make it a block element */
-            margin: 20px auto; /* Center it */
-            width: auto; /* Adjust width automatically */
-            max-width: 200px;
-        }
-        #loadmore:hover {
-            background-color: var(--primary-color);
-            color: var(--background-color);
-        }
-
-        /* Search Toggle Buttons */
-        .button-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            width: 95%;
-            max-width: 900px; /* Limit width */
-            margin: 30px auto;
-            padding: 15px;
-            background-color: rgba(44, 62, 80, 0.5); /* Semi-transparent background */
-            border-radius: 10px;
-        }
-        .search-toggle {
-            background: rgba(0, 0, 0, 0.2);
-            color: #fff; /* Base color */
-            font-size: 0.95em; /* Slightly smaller */
-            font-family: 'Source Sans Pro', sans-serif; /* Consistent font */
-            padding: 8px 15px; /* Adjust padding */
-            border: 1px solid transparent; /* Base border */
-            border-radius: 15px; /* Rounded buttons */
-            cursor: pointer;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
-        }
-        .search-toggle:hover {
-            background-color: var(--primary-color);
-            color: var(--background-color);
-            border-color: var(--primary-color);
-            transform: scale(1.05); /* Slight scale effect */
-        }
-        /* Keep original color cycling logic if desired, or simplify */
-        .search-toggle:nth-child(10n+1){ border-color:#ceea82; color:#ceea82; }
-        .search-toggle:nth-child(10n+2){ border-color:#70cee2; color:#70cee2; }
-        .search-toggle:nth-child(10n+3){ border-color:#ef2b2d; color:#ef2b2d; }
-        .search-toggle:nth-child(10n+4){ border-color:#23b805; color:#23b805; }
-        .search-toggle:nth-child(10n+5){ border-color:var(--primary-color); color:var(--primary-color); }
-        .search-toggle:nth-child(10n+6){ border-color:#cee007; color:#cee007; }
-        .search-toggle:nth-child(10n+7){ border-color:#ff77a8; color:#ff77a8; }
-        .search-toggle:nth-child(10n+8){ border-color:#21a9af; color:#21a9af; }
-        .search-toggle:nth-child(10n+9){ border-color:var(--warning); color:var(--warning); } /* Assuming --warning is defined */
-        .search-toggle:nth-child(10n+10){ border-color:#e316e7; color:#e316e7; }
-
-        .search-toggle:hover { /* Override hover for all */
-             background-color: currentColor; /* Use the border color for background */
-             color: var(--background-color); /* Dark text on hover */
-             transform: scale(1.05);
-        }
-
-
-        /* Footer */
-        .footer {
-            color: rgba(236, 240, 241, 0.6);
-            font-size: 0.9em;
-            margin-top: 40px;
-            padding: 20px;
-            border-top: 1px solid var(--secondary-color);
-        }
-
-        /* Audio Player */
-        #audio-player {
-            position: fixed; /* Fixed at the bottom */
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(34, 49, 63, 0.9); /* Darker semi-transparent */
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px); /* Safari */
-            color: var(--text-color);
-            border-top: 1px solid var(--primary-color);
-            padding: 10px 15px; /* Adjust padding */
-            z-index: 1000; /* Ensure it's on top */
-            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.3);
-            transition: background-color 0.3s ease;
-        }
-        #audio-player .row {
-            align-items: center; /* Vertically align items */
-        }
-        #player-image {
-            height: 60px; /* Adjusted size */
-            width: 60px;
-            border-radius: 6px; /* Slightly less rounded */
-            object-fit: cover;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-        #audio-player .col.fit-content {
-            padding-left: 15px; /* Space between image and text/controls */
-            overflow: hidden; /* Prevent text overflow issues */
-        }
-        #player-name {
-            font-weight: 600;
-            font-size: 1.1em;
-            display: block; /* Ensure it takes full width */
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        #player-album {
-            font-size: 0.9em;
-            color: rgba(236, 240, 241, 0.7);
-            display: block; /* Ensure it takes full width */
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        #player {
-            width: 100%;
-            height: 40px; /* Slightly taller controls */
-            margin-top: 5px; /* Space above controls */
-            /* Basic styling for browser default controls */
-        }
-         /* Customizing audio player controls (basic example) */
-        #player::-webkit-media-controls-panel {
-            background-color: rgba(44, 62, 80, 0.8);
-            border-radius: 5px;
-        }
-        #player::-webkit-media-controls-play-button,
-        #player::-webkit-media-controls-volume-slider,
-        #player::-webkit-media-controls-mute-button,
-        #player::-webkit-media-controls-timeline {
-            filter: invert(90%) sepia(20%) saturate(500%) hue-rotate(90deg); /* Greenish tint */
-        }
-
-
-        /* Floating Downloader Button */
-        .float-button {
-            width: 50px; /* Larger button */
-            height: 50px;
-            border-radius: 50%;
-            background-color: var(--primary-color); /* Use primary color */
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-            cursor: pointer;
-            position: fixed;
-            bottom: 120px; /* Position above player */
-            right: 20px;
-            z-index: 1001; /* Above player */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        .float-button:hover {
-            background-color: var(--hover-color);
-            transform: scale(1.1);
-        }
-        .float-button a {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            color: white; /* Icon color */
-        }
-        .float-button img { /* Assuming Font Awesome isn't used */
-             width: 24px;
-             height: 24px;
-             filter: brightness(0) invert(1); /* Make PNG icon white */
-        }
-        /* Using Font Awesome Icon instead of img */
-        .float-button .fa-download {
-            font-size: 1.5em;
-            color: white;
-        }
-
-
-        /* Modal Popup */
-        .mpopup {
-            position: fixed;
-            overflow: auto;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7); /* Darker overlay */
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            z-index: 9999;
-            display: none;
-            padding: 20px; /* Add padding */
-            animation: fadeIn 0.3s ease; /* Fade in animation */
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
-        }
-        .mpopup.fade-out {
-             animation: fadeOut 0.3s ease forwards;
-        }
-
-
-        .modal-content {
-            background-color: var(--card-background);
-            margin: 5% auto; /* Centered */
-            padding: 0; /* Remove padding, handle in sections */
-            border: 1px solid var(--secondary-color);
-            border-radius: 10px;
-            width: 90%;
-            max-width: 600px; /* Limit max width */
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-            animation: slideIn 0.4s ease-out; /* Slide in animation */
-        }
-
-        @keyframes slideIn {
-             from { transform: translateY(-30px); opacity: 0; }
-             to { transform: translateY(0); opacity: 1; }
-        }
-
-        .modal-header {
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--secondary-color);
-            background-color: var(--secondary-color); /* Header background */
-            border-radius: 10px 10px 0 0;
-            display: flex; /* Use flexbox */
-            justify-content: space-between; /* Space out title and close button */
-            align-items: center;
-        }
-        .modal-header h2 {
-            margin: 0;
-            font-size: 1.5em;
-            color: var(--primary-color);
-            font-family: 'Bitter', serif;
-        }
-        .modal-header .close {
-            color: var(--text-color);
-            font-size: 2em;
-            font-weight: bold;
-            opacity: 0.7;
-            transition: opacity 0.3s ease, transform 0.2s ease;
-            cursor: pointer;
-            padding: 0 10px; /* Easier to click */
-        }
-        .modal-header .close:hover {
-            opacity: 1;
-            transform: rotate(90deg);
-        }
-
-        .modal-body {
-            padding: 20px;
-            max-height: 60vh; /* Limit height and allow scrolling */
-            overflow-y: auto;
-        }
-        ul.nobullets {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-        #download-list li {
-            display: flex;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--secondary-color);
-            transition: background-color 0.2s ease;
-        }
-         #download-list li:last-child {
-             border-bottom: none;
-         }
-         #download-list li:hover {
-             background-color: rgba(44, 62, 80, 0.3); /* Subtle hover */
-         }
-
-        #download-list img#download-cover {
-            width: 50px;
-            height: 50px;
-            border-radius: 4px;
-            margin-right: 15px;
-            object-fit: cover;
-        }
-        #download-list .download-info {
-            flex-grow: 1; /* Take remaining space */
-            overflow: hidden; /* Prevent text overflow */
-        }
-        #download-list span { display: block; } /* Stack info vertically */
-        #download-name {
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        #download-album, #download-size {
-            font-size: 0.9em;
-            color: rgba(236, 240, 241, 0.7);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        #download-status {
-            font-size: 0.9em;
-            font-weight: 500;
-            margin-top: 3px;
-        }
-        #download-status.compiling { color: #f39c12; } /* Orange for compiling */
-        #download-status.complete { color: var(--primary-color); } /* Green for complete */
-        #download-status.error { color: #e74c3c; } /* Red for error */
-
-
-        .modal-footer {
-            padding: 15px 20px;
-            border-top: 1px solid var(--secondary-color);
-            text-align: center;
-            background-color: var(--secondary-color); /* Footer background */
-            border-radius: 0 0 10px 10px;
-        }
-        .modal-footer p {
-            margin: 0;
-            color: rgba(236, 240, 241, 0.7);
-        }
-
-        /* Responsive Design Adjustments */
-        /* Three columns on desktop */
-        @media screen and (min-width: 992px) {
-            .song-container {
-                width: calc(33.33% - 20px); /* Adjusted for gap */
-            }
-        }
-
-        /* Two columns on tablet */
-        @media screen and (min-width: 768px) and (max-width: 991px) {
-            .song-container {
-                width: calc(50% - 20px); /* Adjusted for gap */
-            }
-            .header-dark h1 { font-size: 2.5em; }
-            .header-dark h3 { font-size: 1.3em; }
-        }
-
-        /* One column on mobile */
-        @media screen and (max-width: 767px) {
-            body { padding-bottom: 120px; } /* More space for player on mobile */
-            .song-container {
-                width: calc(100% - 20px); /* Adjusted for gap */
-            }
-            .header-dark h1 { font-size: 2em; }
-            .header-dark h3 { font-size: 1.1em; }
-            .search-form-container { width: 95%; border-radius: 5px; flex-direction: column; padding: 0;}
-            #saavn-search-box { border-radius: 5px 5px 0 0; width: 100%; text-align: center;}
-            #saavn-search-trigger { border-radius: 0 0 5px 5px; width: 100%;}
-            .button-container { width: 95%; padding: 10px;}
-            .search-toggle { font-size: 0.9em; padding: 6px 10px; }
-            #audio-player { padding: 8px 10px; }
-            #player-image { height: 50px; width: 50px; }
-            #audio-player .col.fit-content { padding-left: 10px; }
-            #player-name { font-size: 1em; }
-            #player-album { font-size: 0.8em; }
-            #player { height: 35px; }
-            .float-button { width: 45px; height: 45px; bottom: 100px; right: 15px; }
-            .float-button .fa-download { font-size: 1.3em; }
-            .modal-content { width: 95%; margin: 10% auto; }
-            .modal-header h2 { font-size: 1.3em; }
-            .modal-header .close { font-size: 1.8em; }
-        }
-
-        /* Simple loading animation (optional) */
-        .loading-spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top: 4px solid var(--primary-color);
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
+      }
+      
+      /* Colorful buttons */
+      .search-toggle:nth-child(10n+1){color:#ceea82}
+      .search-toggle:nth-child(10n+2){color:#70cee2}
+      .search-toggle:nth-child(10n+3){color:#ef2b2d}
+      .search-toggle:nth-child(10n+4){color:#23b805}
+      .search-toggle:nth-child(10n+5){color:#8c52ff}
+      .search-toggle:nth-child(10n+6){color:#cee007}
+      .search-toggle:nth-child(10n+7){color:#ff77a8}
+      .search-toggle:nth-child(10n+8){color:#21a9af}
+      .search-toggle:nth-child(10n+9){color:#ffc107}
+      .search-toggle:nth-child(10n+10){color:#e316e7}
     </style>
-</head>
+  </head>
 
-<body style="padding-bottom: 100px;"> <!-- Adjusted padding-bottom -->
+  <body>
     <header class="header-dark">
-        <nav class="navbar navbar-dark navbar-expand-lg navigation-clean-search">
-            <div class="container">
-                <a class="navbar-brand" href="#">Saverino</a>
-                <button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navcol-1">
-                    <ul class="navbar-nav ml-auto"> <!-- Align to right -->
-                        <li class="nav-item">
-                            <a class="btn btn-primary" role="button" href="https://github.com/wiz64/saavn-web-ui" target="_blank" rel="noopener noreferrer">
-                                <i class="fab fa-github"></i> Github
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+      <nav class="navbar navbar-dark navbar-expand-lg">
         <div class="container">
-            <div class="row">
-                <div class="col-md-8 offset-md-2">
-                    <h1 class="text-center">Saverino</h1>
-                    <h3 class="text-center">Music Player &amp; Downloader</h3>
-                    <p class="text-center">Ad-Free, Metadata, &amp; Modern Design</p>
-                </div>
-            </div>
+          <a class="navbar-brand" href="#">Saverino</a>
+          <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navcol-1">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                <a class="btn btn-primary" role="button" href="https://github.com/wiz64/saavn-web-ui" target="_blank">
+                  <i class="fab fa-github me-2"></i>Github
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
+      </nav>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8 offset-md-2 text-center">
+            <h1 class="mb-2">Saverino</h1>
+            <h3 style="color: rgba(249,255,255,0.9);">Music Player & Downloader</h3>
+            <p>Ad-Free, Metadata, & Modern Design</p>
+          </div>
+        </div>
+      </div>
     </header>
-
-    <div>
-        <div class="tab-content">
-            <div class="tab-pane active" role="tabpanel" id="tab-1">
-                <section class="highlight-clean">
-                    <div class="text-center">
-                        <label for="saavn-bitrate" class="sr-only">Select Bitrate:</label> <!-- Added label for accessibility -->
-                        <select id="saavn-bitrate">
-                            <option value="4">320kbps</option>
-                            <option value="3" selected>160kbps</option>
-                            <option value="2">96kbps</option>
-                            <option value="1">48kbps</option>
-                        </select>
-                    </div>
-
-                    <div class="container" style="padding: 0px;">
-                        <div class="intro">
-                            <!-- Updated Search Form Structure -->
-                            <form class="search-form-container" action="#" method="get" onsubmit="SaavnSearch(); return false;"> <!-- Prevent default form submission -->
-                                <input class="form-control" type="text" id="saavn-search-box" placeholder="Enter Name, Year, Artist...">
-                                <button class="btn btn-primary" id="saavn-search-trigger" type="submit">
-                                    <i class="fas fa-search"></i> Search
-                                </button>
-                            </form>
-                            <h5 class="text-uppercase text-center">Results</h5>
-                        </div>
-
-                        <div id="saavn-results" style="min-height: 100px;"> <!-- Added min-height -->
-                            <h5>Featured</h5>
-                            <!-- Example Song Card Structure (to be generated by JS) -->
-                            <!--
-                            <div class="song-container">
-                                <img src="https://placehold.co/150x150/2ecc71/ffffff?text=Song+Art" alt="Song Art">
-                                <h6>Example Song Title</h6>
-                                <p>Artist Name - Album</p>
-                                <div class="btn-group" role="group">
-                                     <button type="button" class="btn btn-success btn-sm"><i class="fas fa-play"></i></button>
-                                     <button type="button" class="btn btn-info btn-sm"><i class="fas fa-download"></i></button>
-                                </div>
-                            </div>
-                             -->
-                        </div>
-                         <!-- Placeholder for loading indicator -->
-                        <div id="loading-indicator" style="display: none;" class="text-center">
-                             <div class="loading-spinner"></div>
-                        </div>
-
-                        <div class="text-center" style="width:100%"><button id="loadmore">Load More</button></div>
-
-                        <div class="button-container">
-                            <!-- Buttons will be generated by JS -->
-                        </div>
-
-                        <p class="footer" align="center">
-                            This content is not affiliated with, endorsed, sponsored, or specifically approved by any third party music provider like Gaana, Saavn, Spotfy, and is not responsible for any copyright material.<br>
-                            We don't serve any music on our servers.<br><br>
-                            Originally by wiz64.<br>
-                            Re-Designed by gaganmalvi & Gemini
-                        </p>
-                        <div style="padding-bottom: 40px;"></div>
-                    </div>
-                </section>
+    
+    <div class="container">
+      <div class="text-center mb-3">
+        <select id="saavn-bitrate" class="form-select-sm">
+          <option value="4">320kbps</option>
+          <option value="3" selected="">160kbps</option>
+          <option value="2">96kbps</option>
+          <option value="1">48kbps</option>
+        </select>
+      </div>
+      
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <form class="text-center" action="#" method="get">
+            <div class="input-group mb-3">
+              <input class="form-control" type="text" id="saavn-search-box" placeholder="Enter Name, Year, Artist">
+              <button class="btn btn-primary" id="saavn-search-trigger" type="submit" onclick="SaavnSearch()">
+                <i class="fas fa-search me-1"></i>Search
+              </button>
             </div>
+          </form>
+          <h5 class="text-uppercase text-center mb-4" style="color: rgb(165,255,184);">Results</h5>
         </div>
+      </div>
+      
+      <div id="saavn-results" class="mb-4">
+        <h5>Featured</h5>
+      </div>
+      
+      <div class="text-center mb-4">
+        <button id="loadmore" class="btn">Load More</button>
+      </div>
+      
+      <div class="button-container">
+        <!-- Buttons will be added by JavaScript -->
+      </div>
+      
+      <p class="footer text-center">
+        This content is not affiliated with, endorsed, sponsored, or specifically approved by any third party music provider like Gaana, Saavn, Spotfy, and is not responsible for any copyright material.<br>
+        We don't serve any music on our servers.<br><br>
+        Originally by wiz64.<br>
+        Re-Designed by gaganmalvi & Monica AI
+      </p>
     </div>
-
-    <!-- Fixed Audio Player -->
+    
     <div id="audio-player">
-        <div class="row no-gutters"> <!-- Use no-gutters to remove spacing -->
-            <div class="col-auto">
-                <img id="player-image" src="https://placehold.co/60x60/34495e/ecf0f1?text=?" alt="Current Song Art" loading="lazy">
-            </div>
-            <div class="col">
-                <div>
-                    <span id="player-name">No Song Playing</span>
-                    <span id="player-album">Select a song</span>
-                </div>
-                <audio id="player" controls controlsList="nodownload">
-                    <source id="audioSource" src="">
-                    Your browser does not support the audio format.
-                </audio>
-            </div>
+      <div class="row align-items-center">
+        <div class="col-auto">
+          <img class="img-fluid" id="player-image" style="height: 75px;width: 75px;" src="https://i.pinimg.com/originals/ed/54/d2/ed54d2fa700d36d4f2671e1be84651df.jpg" loading="lazy">
         </div>
+        <div class="col">
+          <div class="mb-1">
+            <span id="player-name" class="d-inline-block text-truncate" style="max-width: 90%">Song</span>
+            <span id="player-album" class="d-block text-truncate" style="max-width: 90%">Album</span>
+          </div>
+          <audio id="player" controls="controls" controlsList="nodownload" style="width: 100%;height: 30px;">
+            <source id="audioSource" src="">
+            Your browser does not support the audio format.
+          </audio>
+        </div>
+      </div>
     </div>
-
-    <!-- Floating Downloader Popup Trigger -->
+    
+    <!-- floating downloader popup -->
     <div class="float-button">
-        <a href="javascript:void(0);" id="mpopupLink" title="Show Downloads">
-             <!-- Using Font Awesome Icon -->
-             <i class="fas fa-download"></i>
-            <!-- Or keep the image if Font Awesome isn't preferred/available
-            <img src="https://img.icons8.com/ios-filled/50/ffffff/download--v1.png" alt="Downloads">
-             -->
-        </a>
+      <a href="javascript:void(0);" class="btn" id="mpopupLink">
+        <i class="fas fa-download"></i>
+      </a>
     </div>
-
-    <!-- Modal Popup Box -->
+    
+    <!-- Modal popup box -->
     <div id="mpopupBox" class="mpopup">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Downloads</h2>
-                <span class="close" title="Close">&times;</span>
-            </div>
-            <div class="modal-body">
-                <ul id="download-list" class="nobullets">
-                    <!-- Example Download Item Structure (to be generated by JS) -->
-                    <!--
-                    <li>
-                        <img id="download-cover" src="https://placehold.co/50x50/2ecc71/ffffff?text=Art" alt="Cover Art">
-                        <div class="download-info">
-                            <span id="download-name">Example Song Being Downloaded</span>
-                            <span id="download-album">Example Album</span>
-                            <span id="download-size">Size: 5.4 MB</span>
-                            <span id="download-status" class="compiling">Compiling...</span>
-                        </div>
-                    </li>
-                    <li>
-                        <img id="download-cover" src="https://placehold.co/50x50/3498db/ffffff?text=Art" alt="Cover Art">
-                        <div class="download-info">
-                            <span id="download-name">Another Song Title That Is Very Long</span>
-                            <span id="download-album">Another Album</span>
-                            <span id="download-size">Size: 3.8 MB</span>
-                            <span id="download-status" class="complete">Complete</span>
-                        </div>
-                    </li>
-                     -->
-                     <li id="no-downloads" style="text-align: center; color: rgba(236, 240, 241, 0.7);">No active downloads.</li>
-                </ul>
-            </div>
-            <div class="modal-footer">
-                <p>Download status updates here.</p>
-            </div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="close">&times;</span>
+          <h2>Downloads</h2>
         </div>
+        <div class="modal-body">
+          <ul id="download-list" class="nobullets">
+            <!-- Download items will appear here -->
+          </ul>
+        </div>
+        <div class="modal-footer text-center">
+          <p>Yo wait man...</p>
+        </div>
+      </div>
     </div>
-
+    
     <script>
-        // Generate Search Toggle Buttons
-        const buttonTitles = ['2023','English Songs','Edward Maya','Zack Knight','Akcent','Arijit Singh','Enrique Iglesias','Pitbull','Imran Khan', 'DJ Snake', 'Darshan Raval', 'Jubin Nautiyal', 'Armaan Malik', 'Old Songs',"Adele","Billie Eilish","Imagine Dragons","Ed Sheeran","Neha Kakkar", "Badshah", "Atif Aslam", "Guru Randhawa", "Shreya Ghoshal", "Tony Kakkar", "Harrdy Sandhu", "Armaan Malik", "Diljit Dosanjh", "Sonu Nigam", "Vishal Dadlani", "Kanika Kapoor", "Sukhwinder Singh", "Sunidhi Chauhan", "Mika Singh", "Shaan", "Mohit Chauhan", "Pritam", "KK", "Yo Yo Honey Singh","Taylor Swift","Sia","Radioactive","Halsey","The Chainsmokers","Drake","Justin Bieber","Beyonce","The Weeknd","Rihanna","Lady Gaga","AC/DC","Michael Jackson","The Rolling Stones"];
-        const buttonContainer = document.querySelector('.button-container');
-
-        buttonTitles.forEach(title => {
-            const button = document.createElement('button');
-            button.classList.add('search-toggle');
-            button.textContent = title;
-            // Ensure doSaavnSearch function exists globally or adjust scope
-            button.setAttribute('onclick', `doSaavnSearch('${title.replace(/'/g, "\\'")}')`); // Escape single quotes
-            buttonContainer.appendChild(button);
-        });
-
-        // Modal Popup Logic
-        var mpopup = document.getElementById('mpopupBox');
-        var mpLink = document.getElementById("mpopupLink");
-        var close = document.getElementsByClassName("close")[0];
-
-        mpLink.onclick = function() {
-            mpopup.style.display = "block";
-            mpopup.classList.remove('fade-out'); // Ensure fade-in works next time
-        };
-
-        close.onclick = function() {
-            mpopup.classList.add('fade-out');
-            // Wait for animation to finish before hiding
-            setTimeout(() => {
-                 mpopup.style.display = "none";
-            }, 300); // Match animation duration
-        };
-
-        window.onclick = function(event) {
-            if (event.target == mpopup) {
-                 close.onclick(); // Trigger close animation
-            }
-        };
-
-        // Placeholder for SaavnSearch and doSaavnSearch functions
-        // These would handle the API calls and update the #saavn-results div
-        function SaavnSearch() {
-            console.log("SaavnSearch triggered");
-            const query = document.getElementById('saavn-search-box').value;
-            if (!query) return; // Don't search if empty
-            showLoading();
-            // Simulate API call and result display
-            setTimeout(() => {
-                 displayResults(`Results for "${query}"`);
-                 hideLoading();
-            }, 1500);
-            return false; // Prevent form submission
+      // Select modal
+      var mpopup = document.getElementById('mpopupBox');
+      
+      // Select trigger link
+      var mpLink = document.getElementById("mpopupLink");
+      
+      // Select close action element
+      var close = document.getElementsByClassName("close")[0];
+      
+      // Open modal once the link is clicked
+      mpLink.onclick = function() {
+        mpopup.style.display = "block";
+      };
+      
+      // Close modal once close element is clicked
+      close.onclick = function() {
+        mpopup.style.display = "none";
+      };
+      
+      // Close modal when user clicks outside of the modal box
+      window.onclick = function(event) {
+        if (event.target == mpopup) {
+          mpopup.style.display = "none";
         }
-
-        function doSaavnSearch(term) {
-            console.log("doSaavnSearch triggered with term:", term);
-            document.getElementById('saavn-search-box').value = term; // Optional: fill search box
-            showLoading();
-             // Simulate API call and result display
-            setTimeout(() => {
-                 displayResults(`Results for "${term}"`);
-                 hideLoading();
-            }, 1500);
-        }
-
-        function showLoading() {
-             document.getElementById('loading-indicator').style.display = 'block';
-             document.getElementById('saavn-results').innerHTML = ''; // Clear previous results
-        }
-
-        function hideLoading() {
-             document.getElementById('loading-indicator').style.display = 'none';
-        }
-
-        // Placeholder function to display dummy results
-        function displayResults(title) {
-            const resultsContainer = document.getElementById('saavn-results');
-            resultsContainer.innerHTML = `<h5>${title}</h5>`; // Show search term
-            for (let i = 1; i <= 6; i++) {
-                resultsContainer.innerHTML += `
-                <div class="song-container">
-                    <img src="https://placehold.co/150x150/${Math.random().toString(16).substr(-6)}/ffffff?text=Song+${i}" alt="Song Art ${i}">
-                    <h6>Example Song ${i}</h6>
-                    <p>Artist ${i} - Album ${i}</p>
-                    <div class="btn-group" role="group">
-                         <button type="button" class="btn btn-success btn-sm" onclick="playSong('Song ${i}', 'Album ${i}', 'https://placehold.co/150x150/${Math.random().toString(16).substr(-6)}/ffffff?text=Song+${i}')"><i class="fas fa-play"></i></button>
-                         <button type="button" class="btn btn-info btn-sm" onclick="downloadSong('Song ${i}', 'Album ${i}', 'https://placehold.co/150x150/${Math.random().toString(16).substr(-6)}/ffffff?text=Song+${i}')"><i class="fas fa-download"></i></button>
-                    </div>
-                </div>`;
-            }
-        }
-
-        // Placeholder function to update player
-        function playSong(name, album, image) {
-             document.getElementById('player-name').textContent = name;
-             document.getElementById('player-album').textContent = album;
-             document.getElementById('player-image').src = image;
-             // In a real scenario, you'd set the audio source here:
-             // document.getElementById('audioSource').src = 'actual_song_url.mp3';
-             // document.getElementById('player').load();
-             // document.getElementById('player').play();
-             console.log(`Playing: ${name} - ${album}`);
-        }
-
-         // Placeholder function to add to download list
-        function downloadSong(name, album, image) {
-             console.log(`Download initiated: ${name}`);
-             const downloadList = document.getElementById('download-list');
-             const noDownloadsLi = document.getElementById('no-downloads');
-             if (noDownloadsLi) {
-                 noDownloadsLi.style.display = 'none'; // Hide "No downloads" message
-             }
-
-             const downloadId = `download-${Date.now()}`; // Unique ID for the item
-
-             const li = document.createElement('li');
-             li.id = downloadId;
-             li.innerHTML = `
-                <img id="download-cover" src="${image}" alt="Cover Art">
-                <div class="download-info">
-                    <span id="download-name">${name}</span>
-                    <span id="download-album">${album}</span>
-                    <span id="download-size">Size: Calculating...</span>
-                    <span id="download-status" class="compiling">Compiling...</span>
-                </div>
-             `;
-             downloadList.appendChild(li);
-
-             // Simulate download progress
-             setTimeout(() => {
-                 const item = document.getElementById(downloadId);
-                 if (item) {
-                     item.querySelector('#download-size').textContent = `Size: ${(Math.random() * 10 + 2).toFixed(1)} MB`;
-                     item.querySelector('#download-status').textContent = 'Downloading...';
-                 }
-             }, 2000);
-             setTimeout(() => {
-                 const item = document.getElementById(downloadId);
-                 if (item) {
-                     item.querySelector('#download-status').textContent = 'Complete';
-                     item.querySelector('#download-status').classList.remove('compiling');
-                     item.querySelector('#download-status').classList.add('complete');
-                 }
-             }, 5000 + Math.random() * 3000); // Random completion time
-
-             // Show the popup if it's hidden
-             if (mpopup.style.display !== "block") {
-                 mpLink.onclick();
-             }
-        }
-
-
+      };
+      
+      // Button generation script
+      const buttonTitles = ['2023','English Songs','Edward Maya','Zack Knight','Akcent','Arijit Singh','Enrique Iglesias','Pitbull','Imran Khan', 'DJ Snake', 'Darshan Raval', 'Jubin Nautiyal', 'Armaan Malik', 'Old Songs',"Adele","Billie Eilish","Imagine Dragons","Ed Sheeran","Neha Kakkar", "Badshah", "Atif Aslam", "Guru Randhawa", "Shreya Ghoshal", "Tony Kakkar", "Harrdy Sandhu", "Armaan Malik", "Diljit Dosanjh", "Sonu Nigam", "Vishal Dadlani", "Kanika Kapoor", "Sukhwinder Singh", "Sunidhi Chauhan", "Mika Singh", "Shaan", "Mohit Chauhan", "Pritam", "KK", "Yo Yo Honey Singh","Taylor Swift","Sia","Radioactive","Halsey","The Chainsmokers","Drake","Justin Bieber","Beyonce","The Weeknd","Rihanna","Lady Gaga","AC/DC","Michael Jackson","The Rolling Stones"];
+      
+      const buttonContainer = document.querySelector('.button-container');
+      
+      buttonTitles.forEach(title => {
+        const button = document.createElement('button');
+        button.classList.add('search-toggle');
+        button.textContent = title;
+        button.setAttribute('onclick', `doSaavnSearch('${title}')`);
+        buttonContainer.appendChild(button);
+      });
     </script>
-
-    <!-- External JS (Keep these if they contain essential logic not replaced above) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.1/js/bootstrap.bundle.min.js"></script>
-    <!-- Make sure these files exist or remove/replace their functionality -->
-    <!-- <script src="assets/js/functions.js"></script> -->
-    <!-- <script src="assets/js/saavn-search.js"></script> -->
-
-</body>
-</html>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/functions.js"></script>
+    <script src="assets/js/saavn-search.js"></script>
+  </body>
+  </html>
