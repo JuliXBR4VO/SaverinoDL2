@@ -1,465 +1,669 @@
-  <!DOCTYPE html>
-  <html lang="en">
-  <!--
-  Thanks to: wiz64
-  -->
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Saverino</title>
-    <meta name="description" content="Saavn Music Player is an Ad-Free Music Player, High Quality MP3 Songs with Metadata support, and a Modern Design. A large library of songs. developed by wiz64">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-      :root {
-        --primary-color: #8c52ff;
-        --secondary-color: #5e17eb;
-        --dark-bg: #121212;
-        --card-bg: #1e1e1e;
-        --text-primary: #ffffff;
-        --text-secondary: #b3b3b3;
-      }
-      
-      body {
-        font-family: 'Poppins', sans-serif;
-        background: var(--dark-bg);
-        color: var(--text-primary);
-        padding-bottom: 100px;
-      }
-      
-      .header-dark {
-        background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
-        padding: 30px 0;
-        border-radius: 0 0 25px 25px;
-        margin-bottom: 20px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      }
-      
-      .navbar-brand {
-        font-weight: 700;
-        font-size: 24px;
-        color: white !important;
-      }
-      
-      .btn-primary {
-        background-color: var(--primary-color);
-        border-color: var(--primary-color);
-        border-radius: 50px;
-        padding: 8px 20px;
-        transition: all 0.3s ease;
-      }
-      
-      .btn-primary:hover {
-        background-color: var(--secondary-color);
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(94, 23, 235, 0.3);
-      }
-      
-      #saavn-search-box {
-        border-radius: 50px 0 0 50px;
-        padding: 12px 20px;
-        border: none;
-        background: rgba(255,255,255,0.1);
-        color: white;
-        backdrop-filter: blur(10px);
-      }
-      
-      #saavn-search-box::placeholder {
-        color: rgba(255,255,255,0.6);
-      }
-      
-      #saavn-search-trigger {
-        border-radius: 0 50px 50px 0;
-        padding: 12px 25px;
-      }
-      
-      #saavn-results {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        justify-content: center;
-        margin-top: 30px;
-      }
-      
-      .song-container {
-        background: var(--card-bg);
-        border-radius: 15px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      }
-      
-      .song-container:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-      }
-      
-      .search-toggle {
-        background: rgba(255,255,255,0.1);
-        color: white;
-        border: none;
-        border-radius: 50px;
-        padding: 8px 15px;
-        margin: 5px;
-        transition: all 0.3s ease;
-        font-size: 14px;
-      }
-      
-      .search-toggle:hover {
-        background: var(--primary-color);
-        transform: translateY(-2px);
-      }
-      
-      .button-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        margin: 20px 0;
-      }
-      
-      #loadmore {
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: 50px;
-        padding: 10px 20px;
-        margin: 20px auto;
-        display: block;
-        transition: all 0.3s ease;
-        width: 80%;
-        max-width: 300px;
-      }
-      
-      #loadmore:hover {
-        background: var(--secondary-color);
-        transform: translateY(-2px);
-      }
-      
-      #audio-player {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(30, 30, 30, 0.8);
-        backdrop-filter: blur(10px);
-        padding: 10px 20px;
-        border-radius: 20px 20px 0 0;
-        box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
-        z-index: 1000;
-      }
-      
-      #player-image {
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      }
-      
-      #player-name {
-        font-weight: 600;
-        font-size: 16px;
-      }
-      
-      #player-album {
-        color: var(--text-secondary);
-        font-size: 14px;
-      }
-      
-      audio::-webkit-media-controls-panel {
-        background-color: rgba(255,255,255,0.1);
-      }
-      
-      audio::-webkit-media-controls-play-button {
-        background-color: var(--primary-color);
-        border-radius: 50%;
-      }
-      
-      .float-button {
-        width: 50px !important;
-        height: 50px !important;
-        border-radius: 50%;
-        background: var(--primary-color);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        transition: all 0.3s ease;
-      }
-      
-      .float-button:hover {
-        transform: scale(1.1);
-      }
-      
-      .float-button a {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        background: none;
-        border: none;
-      }
-      
-      .float-button img {
-        width: 24px;
-        height: 24px;
-        filter: invert(1);
-      }
-      
-      .mpopup {
-        background: rgba(0,0,0,0.8);
-        backdrop-filter: blur(10px);
-      }
-      
-      .modal-content {
-        background: var(--card-bg);
-        border-radius: 20px;
-        padding: 20px;
-        color: var(--text-primary);
-        max-width: 800px;
-        margin: 30px auto;
-      }
-      
-      .modal-header {
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        padding-bottom: 15px;
-      }
-      
-      .close {
-        color: var(--text-primary);
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-      }
-      
-      #download-list li {
-        display: flex;
-        align-items: center;
-        padding: 10px 0;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-      }
-      
-      #download-list img {
-        border-radius: 10px;
-        margin-right: 15px;
-      }
-      
-      #saavn-bitrate {
-        background: rgba(255,255,255,0.1);
-        color: white;
-        border: none;
-        border-radius: 50px;
-        padding: 8px 15px;
-        margin: 10px 0;
-      }
-      
-      .footer {
-        color: var(--text-secondary);
-        font-size: 12px;
-        margin-top: 40px;
-        padding: 0 20px;
-      }
-      
-      /* Responsive adjustments */
-      @media screen and (min-width: 992px) {
-        .song-container {
-          width: calc(33.33% - 20px);
-        }
-      }
-      
-      @media screen and (min-width: 768px) and (max-width: 991px) {
-        .song-container {
-          width: calc(50% - 20px);
-        }
-      }
-      
-      @media screen and (max-width: 767px) {
-        .song-container {
-          width: calc(100% - 20px);
-        }
-        
-        .header-dark {
-          padding: 20px 0;
-        }
-      }
-      
-      /* Colorful buttons */
-      .search-toggle:nth-child(10n+1){color:#ceea82}
-      .search-toggle:nth-child(10n+2){color:#70cee2}
-      .search-toggle:nth-child(10n+3){color:#ef2b2d}
-      .search-toggle:nth-child(10n+4){color:#23b805}
-      .search-toggle:nth-child(10n+5){color:#8c52ff}
-      .search-toggle:nth-child(10n+6){color:#cee007}
-      .search-toggle:nth-child(10n+7){color:#ff77a8}
-      .search-toggle:nth-child(10n+8){color:#21a9af}
-      .search-toggle:nth-child(10n+9){color:#ffc107}
-      .search-toggle:nth-child(10n+10){color:#e316e7}
-    </style>
-  </head>
+<!DOCTYPE html>
+<html lang="en">
+<!--
+Original Developer: wiz64
+Contribute: https://github.com/wiz64/saavn-web-ui
+UI Upgrade by JuliXBR4VO
+-->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+<title>Saverino</title>
+<meta name="description" content="Saavn Music Player is an Ad-Free Music Player, High Quality MP3 Songs with Metadata support, and a Modern Design. A large library of songs. developed by wiz64">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root {
+    --primary-color: #8c52ff;
+    --secondary-color: #5e17eb;
+    --dark-bg: #121212;
+    --card-bg: #1e1e1e;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--dark-bg);
+    color: var(--text-primary);
+    padding-bottom: 100px;
+  }
+  
+  /* Loading Animation */
+  .loader-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(18, 18, 18, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+  }
 
-  <body>
-    <header class="header-dark">
-      <nav class="navbar navbar-dark navbar-expand-lg">
-        <div class="container">
-          <a class="navbar-brand" href="#">Saverino</a>
-          <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navcol-1">
-            <ul class="navbar-nav ms-auto">
-              <li class="nav-item">
-                <a class="btn btn-primary" role="button" href="https://github.com/wiz64/saavn-web-ui" target="_blank">
-                  <i class="fab fa-github me-2"></i>Github
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-      <div class="container">
-        <div class="row">
-          <div class="col-md-8 offset-md-2 text-center">
-            <h1 class="mb-2">Saverino</h1>
-            <h3 style="color: rgba(249,255,255,0.9);">Music Player & Downloader</h3>
-            <p>Ad-Free, Metadata, & Modern Design 
-              (Downloads on the bottom page) </p>
-          </div>
-        </div>
-      </div>
-    </header>
+  .loader {
+    width: 50px;
+    height: 50px;
+    border: 3px solid var(--text-secondary);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s ease-in-out infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Fullscreen Player */
+  .fullscreen-player {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(18, 18, 18, 0.95);
+    z-index: 2000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+
+  .fullscreen-player.active {
+    display: flex;
+  }
+
+  .fullscreen-cover {
+    width: 300px;
+    height: 300px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    margin-bottom: 30px;
+    transition: transform 0.3s ease;
+  }
+
+  .fullscreen-cover:hover {
+    transform: scale(1.05);
+  }
+
+  .fullscreen-info {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .fullscreen-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .fullscreen-album {
+    font-size: 18px;
+    color: var(--text-secondary);
+  }
+
+  .close-fullscreen {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    color: var(--text-primary);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .close-fullscreen:hover {
+    background: rgba(255,255,255,0.2);
+    transform: rotate(90deg);
+  }
+  
+  .header-dark {
+    background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+    padding: 30px 0;
+    border-radius: 0 0 25px 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+  
+  .navbar-brand {
+    font-weight: 700;
+    font-size: 24px;
+    color: white !important;
+  }
+  
+  .btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    border-radius: 50px;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(94, 23, 235, 0.3);
+  }
+  
+  #saavn-search-box {
+    border-radius: 50px 0 0 50px;
+    padding: 12px 20px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    backdrop-filter: blur(10px);
+  }
+  
+  #saavn-search-box::placeholder {
+    color: rgba(255,255,255,0.6);
+  }
+  
+  #saavn-search-trigger {
+    border-radius: 0 50px 50px 0;
+    padding: 12px 25px;
+  }
+  
+  #saavn-results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
+  }
+  
+  .song-container {
+    background: var(--card-bg);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+  
+  .song-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  }
+  
+  .search-toggle {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 8px 15px;
+    margin: 5px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+  }
+  
+  .search-toggle:hover {
+    background: var(--primary-color);
+    transform: translateY(-2px);
+  }
+  
+  .button-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px 0;
+  }
+  
+  #loadmore {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 20px;
+    margin: 20px auto;
+    display: block;
+    transition: all 0.3s ease;
+    width: 80%;
+    max-width: 300px;
+  }
+  
+  #loadmore:hover {
+    background: var(--secondary-color);
+    transform: translateY(-2px);
+  }
+  
+  #audio-player {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(30, 30, 30, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 10px 20px;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+    z-index: 1000;
+  }
+  
+  #player-image {
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  #player-image:hover {
+    transform: scale(1.05);
+  }
+  
+  #player-name {
+    font-weight: 600;
+    font-size: 16px;
+  }
+  
+  #player-album {
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+  
+  audio::-webkit-media-controls-panel {
+    background-color: rgba(255,255,255,0.1);
+  }
+  
+  audio::-webkit-media-controls-play-button {
+    background-color: var(--primary-color);
+    border-radius: 50%;
+  }
+  
+  .float-button {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50%;
+    background: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+  }
+  
+  .float-button:hover {
+    transform: scale(1.1);
+  }
+  
+  .float-button a {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background: none;
+    border: none;
+  }
+  
+  .float-button img {
+    width: 24px;
+    height: 24px;
+    filter: invert(1);
+  }
+  
+  .mpopup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(10px);
+    z-index: 1500;
+  }
+  
+  .modal-content {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 20px;
+    color: var(--text-primary);
+    max-width: 800px;
+    margin: 30px auto;
+    animation: modalSlideIn 0.3s ease;
+  }
+
+  @keyframes modalSlideIn {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  .modal-header {
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 15px;
+  }
+  
+  .close {
+    color: var(--text-primary);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  .close:hover {
+    transform: rotate(90deg);
+  }
+  
+  #download-list li {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    transition: transform 0.3s ease;
+  }
+
+  #download-list li:hover {
+    transform: translateX(10px);
+  }
+  
+  #download-list img {
+    border-radius: 10px;
+    margin-right: 15px;
+  }
+  
+  #saavn-bitrate {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 8px 15px;
+    margin: 10px 0;
+  }
+  
+  .footer {
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin-top: 40px;
+    padding: 0 20px;
+  }
+  
+  /* Responsive adjustments */
+  @media screen and (min-width: 992px) {
+    .song-container {
+      width: calc(33.33% - 20px);
+    }
+  }
+  
+  @media screen and (min-width: 768px) and (max-width: 991px) {
+    .song-container {
+      width: calc(50% - 20px);
+    }
+  }
+  
+  @media screen and (max-width: 767px) {
+    .song-container {
+      width: calc(100% - 20px);
+    }
     
+    .header-dark {
+      padding: 20px 0;
+    }
+
+    .fullscreen-cover {
+      width: 250px;
+      height: 250px;
+    }
+  }
+  
+  /* Colorful buttons */
+  .search-toggle:nth-child(10n+1){color:#ceea82}
+  .search-toggle:nth-child(10n+2){color:#70cee2}
+  .search-toggle:nth-child(10n+3){color:#ef2b2d}
+  .search-toggle:nth-child(10n+4){color:#23b805}
+  .search-toggle:nth-child(10n+5){color:#8c52ff}
+  .search-toggle:nth-child(10n+6){color:#cee007}
+  .search-toggle:nth-child(10n+7){color:#ff77a8}
+  .search-toggle:nth-child(10n+8){color:#21a9af}
+  .search-toggle:nth-child(10n+9){color:#ffc107}
+  .search-toggle:nth-child(10n+10){color:#e316e7}
+</style>
+</head>
+
+<body>
+<!-- Loading Animation -->
+<div class="loader-container">
+  <div class="loader"></div>
+</div>
+
+<!-- Fullscreen Player -->
+<div class="fullscreen-player">
+  <div class="close-fullscreen">
+    <i class="fas fa-times"></i>
+  </div>
+  <img class="fullscreen-cover" src="" alt="Album Cover">
+  <div class="fullscreen-info">
+    <div class="fullscreen-title"></div>
+    <div class="fullscreen-album"></div>
+  </div>
+</div>
+
+<header class="header-dark">
+  <nav class="navbar navbar-dark navbar-expand-lg">
     <div class="container">
-      <div class="text-center mb-3">
-        <select id="saavn-bitrate" class="form-select-sm">
-          <option value="4">320kbps</option>
-          <option value="3" selected="">160kbps</option>
-          <option value="2">96kbps</option>
-          <option value="1">48kbps</option>
-        </select>
-      </div>
-      
-      <div class="row justify-content-center">
-        <div class="col-md-8">
-          <form class="text-center" action="#" method="get">
-            <div class="input-group mb-3">
-              <input class="form-control" type="text" id="saavn-search-box" placeholder="Enter Name, Year, Artist">
-              <button class="btn btn-primary" id="saavn-search-trigger" type="submit" onclick="SaavnSearch()">
-                <i class="fas fa-search me-1"></i>Search
-              </button>
-            </div>
-          </form>
-          <h5 class="text-uppercase text-center mb-4" style="color: rgb(165,255,184);">Results</h5>
-        </div>
-      </div>
-      
-      <div id="saavn-results" class="mb-4">
-        <h5>Featured</h5>
-      </div>
-      
-      <div class="text-center mb-4">
-        <button id="loadmore" class="btn">Load More</button>
-      </div>
-      
-      <div class="button-container">
-        <!-- Buttons will be added by JavaScript -->
-      </div>
-      
-      <p class="footer text-center">
-        This content is not affiliated with, endorsed, sponsored, or specifically approved by any third party music provider like Gaana, Saavn, Spotfy, and is not responsible for any copyright material.<br>
-        We don't serve any music on our servers.<br><br>
-        Originally by wiz64.<br>
-        Re-Designed by JuliXBR4VO
-      </p>
-    </div>
-    
-    <div id="audio-player">
-      <div class="row align-items-center">
-        <div class="col-auto">
-          <img class="img-fluid" id="player-image" style="height: 75px;width: 75px;" src="https://i.pinimg.com/originals/ed/54/d2/ed54d2fa700d36d4f2671e1be84651df.jpg" loading="lazy">
-        </div>
-        <div class="col">
-          <div class="mb-1">
-            <span id="player-name" class="d-inline-block text-truncate" style="max-width: 90%">Song</span>
-            <span id="player-album" class="d-block text-truncate" style="max-width: 90%">Album</span>
-          </div>
-          <audio id="player" controls="controls" controlsList="nodownload" style="width: 100%;height: 30px;">
-            <source id="audioSource" src="">
-            Your browser does not support the audio format.
-          </audio>
-        </div>
+      <a class="navbar-brand" href="#">Saverino</a>
+      <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navcol-1">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="btn btn-primary" role="button" href="https://github.com/wiz64/saavn-web-ui" target="_blank">
+              <i class="fab fa-github me-2"></i>Github
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
-    
-    <!-- floating downloader popup -->
-    <div class="float-button">
-      <a href="javascript:void(0);" class="btn" id="mpopupLink">
-        <i class="fas fa-download"></i>
-      </a>
-    </div>
-    
-    <!-- Modal popup box -->
-    <div id="mpopupBox" class="mpopup">
-      <div class="modal-content">
-        <div class="modal-header">
-          <span class="close">&times;</span>
-          <h2>Downloads</h2>
-        </div>
-        <div class="modal-body">
-          <ul id="download-list" class="nobullets">
-            <!-- Download items will appear here -->
-          </ul>
-        </div>
-        <div class="modal-footer text-center">
-          <p>Yo wait man...</p>
-        </div>
+  </nav>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 offset-md-2 text-center">
+        <h1 class="mb-2">Saverino</h1>
+        <h3 style="color: rgba(249,255,255,0.9);">Music Player & Downloader</h3>
+        <p>Ad-Free, Metadata, & Modern Design</p>
       </div>
     </div>
-    
-    <script>
-      // Select modal
-      var mpopup = document.getElementById('mpopupBox');
-      
-      // Select trigger link
-      var mpLink = document.getElementById("mpopupLink");
-      
-      // Select close action element
-      var close = document.getElementsByClassName("close")[0];
-      
-      // Open modal once the link is clicked
-      mpLink.onclick = function() {
-        mpopup.style.display = "block";
-      };
-      
-      // Close modal once close element is clicked
-      close.onclick = function() {
-        mpopup.style.display = "none";
-      };
-      
-      // Close modal when user clicks outside of the modal box
-      window.onclick = function(event) {
-        if (event.target == mpopup) {
-          mpopup.style.display = "none";
-        }
-      };
-      
-      // Button generation script
-      const buttonTitles = ['2023','English Songs','Edward Maya','Zack Knight','Akcent','Arijit Singh','Enrique Iglesias','Pitbull','Imran Khan', 'DJ Snake', 'Darshan Raval', 'Jubin Nautiyal', 'Armaan Malik', 'Old Songs',"Adele","Billie Eilish","Imagine Dragons","Ed Sheeran","Neha Kakkar", "Badshah", "Atif Aslam", "Guru Randhawa", "Shreya Ghoshal", "Tony Kakkar", "Harrdy Sandhu", "Armaan Malik", "Diljit Dosanjh", "Sonu Nigam", "Vishal Dadlani", "Kanika Kapoor", "Sukhwinder Singh", "Sunidhi Chauhan", "Mika Singh", "Shaan", "Mohit Chauhan", "Pritam", "KK", "Yo Yo Honey Singh","Taylor Swift","Sia","Radioactive","Halsey","The Chainsmokers","Drake","Justin Bieber","Beyonce","The Weeknd","Rihanna","Lady Gaga","AC/DC","Michael Jackson","The Rolling Stones"];
-      
-      const buttonContainer = document.querySelector('.button-container');
-      
-      buttonTitles.forEach(title => {
-        const button = document.createElement('button');
-        button.classList.add('search-toggle');
-        button.textContent = title;
-        button.setAttribute('onclick', `doSaavnSearch('${title}')`);
-        buttonContainer.appendChild(button);
-      });
-    </script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/functions.js"></script>
-    <script src="assets/js/saavn-search.js"></script>
-  </body>
-  </html>
+  </div>
+</header>
+
+<div class="container">
+  <div class="text-center mb-3">
+    <select id="saavn-bitrate" class="form-select-sm">
+      <option value="4">320kbps</option>
+      <option value="3" selected="">160kbps</option>
+      <option value="2">96kbps</option>
+      <option value="1">48kbps</option>
+    </select>
+  </div>
+  
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <form class="text-center" action="#" method="get">
+        <div class="input-group mb-3">
+          <input class="form-control" type="text" id="saavn-search-box" placeholder="Enter Name, Year, Artist">
+          <button class="btn btn-primary" id="saavn-search-trigger" type="submit" onclick="SaavnSearch()">
+            <i class="fas fa-search me-1"></i>Search
+          </button>
+        </div>
+      </form>
+      <h5 class="text-uppercase text-center mb-4" style="color: rgb(165,255,184);">Results</h5>
+    </div>
+  </div>
+  
+  <div id="saavn-results" class="mb-4">
+    <h5>Featured</h5>
+  </div>
+  
+  <div class="text-center mb-4">
+    <button id="loadmore" class="btn">Load More</button>
+  </div>
+  
+  <div class="button-container">
+    <!-- Buttons will be added by JavaScript -->
+  </div>
+  
+  <p class="footer text-center">
+    This content is not affiliated with, endorsed, sponsored, or specifically approved by any third party music provider like Gaana, Saavn, Spotfy, and is not responsible for any copyright material.<br>
+    We don't serve any music on our servers.<br><br>
+    Originally by wiz64.<br>
+    Re-Designed by JuliXBR4VO
+  </p>
+</div>
+
+<div id="audio-player">
+  <div class="row align-items-center">
+    <div class="col-auto">
+      <img class="img-fluid" id="player-image" style="height: 75px;width: 75px;" src="https://i.pinimg.com/originals/ed/54/d2/ed54d2fa700d36d4f2671e1be84651df.jpg" loading="lazy">
+    </div>
+    <div class="col">
+      <div class="mb-1">
+        <span id="player-name" class="d-inline-block text-truncate" style="max-width: 90%">Song</span>
+        <span id="player-album" class="d-block text-truncate" style="max-width: 90%">Album</span>
+      </div>
+      <audio id="player" controls="controls" controlsList="nodownload" style="width: 100%;height: 30px;">
+        <source id="audioSource" src="">
+        Your browser does not support the audio format.
+      </audio>
+    </div>
+  </div>
+</div>
+
+<!-- floating downloader popup -->
+<div class="float-button">
+  <a href="javascript:void(0);" class="btn" id="mpopupLink">
+    <i class="fas fa-download"></i>
+  </a>
+</div>
+
+<!-- Modal popup box -->
+<div id="mpopupBox" class="mpopup">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close">&times;</span>
+      <h2>Downloads</h2>
+    </div>
+    <div class="modal-body">
+      <ul id="download-list" class="nobullets">
+        <!-- Download items will appear here -->
+      </ul>
+    </div>
+    <div class="modal-footer text-center">
+      <p>Yo wait man...</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Loading Animation
+  function showLoader() {
+    document.querySelector('.loader-container').style.display = 'flex';
+  }
+
+  function hideLoader() {
+    document.querySelector('.loader-container').style.display = 'none';
+  }
+
+  // Fullscreen Player
+  const fullscreenPlayer = document.querySelector('.fullscreen-player');
+  const playerImage = document.getElementById('player-image');
+  const closeFullscreen = document.querySelector('.close-fullscreen');
+  const fullscreenCover = document.querySelector('.fullscreen-cover');
+  const fullscreenTitle = document.querySelector('.fullscreen-title');
+  const fullscreenAlbum = document.querySelector('.fullscreen-album');
+
+  playerImage.addEventListener('click', () => {
+    fullscreenCover.src = playerImage.src;
+    fullscreenTitle.textContent = document.getElementById('player-name').textContent;
+    fullscreenAlbum.textContent = document.getElementById('player-album').textContent;
+    fullscreenPlayer.classList.add('active');
+  });
+
+  closeFullscreen.addEventListener('click', () => {
+    fullscreenPlayer.classList.remove('active');
+  });
+
+  // Modal Popup
+  var mpopup = document.getElementById('mpopupBox');
+  var mpLink = document.getElementById("mpopupLink");
+  var close = document.getElementsByClassName("close")[0];
+
+  mpLink.onclick = function() {
+    mpopup.style.display = "block";
+  };
+
+  close.onclick = function() {
+    mpopup.style.display = "none";
+  };
+
+  window.onclick = function(event) {
+    if (event.target == mpopup) {
+      mpopup.style.display = "none";
+    }
+    if (event.target == fullscreenPlayer) {
+      fullscreenPlayer.classList.remove('active');
+    }
+  };
+
+  // Button generation
+  const buttonTitles = ['2023','English Songs','Edward Maya','Zack Knight','Akcent','Arijit Singh','Enrique Iglesias','Pitbull','Imran Khan', 'DJ Snake', 'Darshan Raval', 'Jubin Nautiyal', 'Armaan Malik', 'Old Songs',"Adele","Billie Eilish","Imagine Dragons","Ed Sheeran","Neha Kakkar", "Badshah", "Atif Aslam", "Guru Randhawa", "Shreya Ghoshal", "Tony Kakkar", "Harrdy Sandhu", "Armaan Malik", "Diljit Dosanjh", "Sonu Nigam", "Vishal Dadlani", "Kanika Kapoor", "Sukhwinder Singh", "Sunidhi Chauhan", "Mika Singh", "Shaan", "Mohit Chauhan", "Pritam", "KK", "Yo Yo Honey Singh","Taylor Swift","Sia","Radioactive","Halsey","The Chainsmokers","Drake","Justin Bieber","Beyonce","The Weeknd","Rihanna","Lady Gaga","AC/DC","Michael Jackson","The Rolling Stones"];
+
+  const buttonContainer = document.querySelector('.button-container');
+
+  buttonTitles.forEach(title => {
+    const button = document.createElement('button');
+    button.classList.add('search-toggle');
+    button.textContent = title;
+    button.setAttribute('onclick', `doSaavnSearch('${title}')`);
+    buttonContainer.appendChild(button);
+  });
+
+  // Modify existing SaavnSearch function to include loading animation
+  const originalSaavnSearch = window.SaavnSearch;
+  window.SaavnSearch = function() {
+    showLoader();
+    originalSaavnSearch();
+    // Hide loader after search completes (you might need to modify this timing)
+    setTimeout(hideLoader, 1500);
+  }
+
+  // Modify existing doSaavnSearch function to include loading animation
+  const originalDoSaavnSearch = window.doSaavnSearch;
+  window.doSaavnSearch = function(query) {
+    showLoader();
+    originalDoSaavnSearch(query);
+    // Hide loader after search completes (you might need to modify this timing)
+    setTimeout(hideLoader, 1500);
+  }
+</script>
+<script src="assets/js/functions.js"></script>
+<script src="assets/js/saavn-search.js"></script>
+</body>
+</html>
