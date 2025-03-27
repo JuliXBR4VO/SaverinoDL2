@@ -60,76 +60,198 @@ UI Upgrade by JuliXBR4VO
       }
     }
 
-    /* Fullscreen Player */
+    /* Improved Fullscreen Player */
     .fullscreen-player {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(18, 18, 18, 0.95);
+      background: linear-gradient(135deg, rgba(18, 18, 18, 0.95), rgba(40, 40, 40, 0.95));
       z-index: 2000;
       display: none;
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
+      backdrop-filter: blur(20px);
+      transition: all 0.5s ease;
     }
 
     .fullscreen-player.active {
       display: flex;
     }
 
+    .cover-wrapper {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      margin-bottom: 40px;
+    }
+
+    .vinyl-disc {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 290px;
+      height: 290px;
+      background: radial-gradient(circle at center, 
+        #000000 0%, 
+        #333333 35%, 
+        #000000 35.5%,
+        #333333 36%,
+        #000000 36.5%,
+        #333333 37%,
+        #000000 37.5%,
+        #333333 38%,
+        #000000 38.5%
+      );
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: all 0.5s ease;
+    }
+
+    .fullscreen-player.playing .vinyl-disc {
+      opacity: 1;
+      animation: spinDisc 4s linear infinite;
+    }
+
     .fullscreen-cover {
+      position: relative;
       width: 300px;
       height: 300px;
       border-radius: 20px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      margin-bottom: 30px;
-      transition: transform 0.3s ease;
+      transition: all 0.5s ease;
+      z-index: 1;
     }
 
-    .fullscreen-cover:hover {
-      transform: scale(1.05);
+    .fullscreen-player.playing .fullscreen-cover {
+      transform: translateX(-40%) rotate(-2deg);
     }
 
     .fullscreen-info {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
+      width: 80%;
+      max-width: 400px;
     }
 
     .fullscreen-title {
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 600;
       margin-bottom: 10px;
+      color: white;
+    }
+
+    .fullscreen-artist {
+      font-size: 20px;
+      color: var(--primary-color);
+      margin-bottom: 5px;
     }
 
     .fullscreen-album {
-      font-size: 18px;
+      font-size: 16px;
       color: var(--text-secondary);
     }
 
-    .close-fullscreen {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 24px;
-      color: var(--text-primary);
-      cursor: pointer;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
+    .fullscreen-controls {
+      width: 80%;
+      max-width: 400px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
       background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .progress {
+      width: 0%;
+      height: 100%;
+      background: var(--primary-color);
+      border-radius: 3px;
+      position: absolute;
+      transition: width 0.1s linear;
+    }
+
+    .time-info {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .control-buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .control-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.3s ease;
     }
 
+    .control-btn:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    #play-pause-btn {
+      font-size: 30px;
+      background: var(--primary-color);
+      width: 60px;
+      height: 60px;
+    }
+
+    #play-pause-btn:hover {
+      transform: scale(1.1);
+      background: var(--secondary-color);
+    }
+
+    .close-fullscreen {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
     .close-fullscreen:hover {
       background: rgba(255,255,255,0.2);
       transform: rotate(90deg);
+    }
+
+    @keyframes spinDisc {
+      from {
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
+      to {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
     }
     
     .header-dark {
@@ -259,7 +381,7 @@ UI Upgrade by JuliXBR4VO
       cursor: pointer;
       transition: transform 0.3s ease;
     }
-
+    
     #player-image:hover {
       transform: scale(1.05);
     }
@@ -429,6 +551,18 @@ UI Upgrade by JuliXBR4VO
         width: 250px;
         height: 250px;
       }
+      
+      .fullscreen-title {
+        font-size: 24px;
+      }
+      
+      .fullscreen-artist {
+        font-size: 18px;
+      }
+      
+      .fullscreen-album {
+        font-size: 14px;
+      }
     }
     
     /* Colorful buttons */
@@ -451,15 +585,42 @@ UI Upgrade by JuliXBR4VO
     <div class="loader"></div>
   </div>
 
-  <!-- Fullscreen Player -->
+  <!-- Improved Fullscreen Player -->
   <div class="fullscreen-player">
     <div class="close-fullscreen">
       <i class="fas fa-times"></i>
     </div>
-    <img class="fullscreen-cover" src="" alt="Album Cover">
+    
+    <div class="cover-wrapper">
+      <div class="vinyl-disc"></div>
+      <img class="fullscreen-cover" src="" alt="Album Cover">
+    </div>
+
     <div class="fullscreen-info">
       <div class="fullscreen-title"></div>
+      <div class="fullscreen-artist"></div>
       <div class="fullscreen-album"></div>
+    </div>
+
+    <div class="fullscreen-controls">
+      <div class="progress-bar">
+        <div class="progress"></div>
+      </div>
+      <div class="time-info">
+        <span class="current-time">0:00</span>
+        <span class="total-time">0:00</span>
+      </div>
+      <div class="control-buttons">
+        <button class="control-btn" id="prev-btn">
+          <i class="fas fa-step-backward"></i>
+        </button>
+        <button class="control-btn" id="play-pause-btn">
+          <i class="fas fa-play"></i>
+        </button>
+        <button class="control-btn" id="next-btn">
+          <i class="fas fa-step-forward"></i>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -529,7 +690,7 @@ UI Upgrade by JuliXBR4VO
     </div>
     
     <p class="footer text-center">
-      This content is not affiliated with, endorsed, sponsored, or specifically approved by any third party music provider like Gaana, Saavn, Spotfy, and is not responsible for any copyright material.<br>
+      This content is not affiliated with, endorsed, sponsored, or specifically approved by any third party music provider like Gaana, Saavn, Spotfy, and is not responsible for any copyright material.[...]
       We don't serve any music on our servers.<br><br>
       Originally by wiz64.<br>
       Re-Designed by JuliXBR4VO
@@ -591,23 +752,88 @@ UI Upgrade by JuliXBR4VO
       document.querySelector('.loader-container').style.display = 'none';
     }
 
-    // Fullscreen Player
+    // Improved Fullscreen Player
+    const audio = document.getElementById('player');
     const fullscreenPlayer = document.querySelector('.fullscreen-player');
     const playerImage = document.getElementById('player-image');
     const closeFullscreen = document.querySelector('.close-fullscreen');
     const fullscreenCover = document.querySelector('.fullscreen-cover');
     const fullscreenTitle = document.querySelector('.fullscreen-title');
+    const fullscreenArtist = document.querySelector('.fullscreen-artist');
     const fullscreenAlbum = document.querySelector('.fullscreen-album');
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    const progressBar = document.querySelector('.progress-bar');
+    const progress = document.querySelector('.progress');
+    const currentTimeSpan = document.querySelector('.current-time');
+    const totalTimeSpan = document.querySelector('.total-time');
 
     playerImage.addEventListener('click', () => {
       fullscreenCover.src = playerImage.src;
       fullscreenTitle.textContent = document.getElementById('player-name').textContent;
       fullscreenAlbum.textContent = document.getElementById('player-album').textContent;
+      fullscreenArtist.textContent = document.getElementById('player-album').textContent.split(' - ')[0];
       fullscreenPlayer.classList.add('active');
+      updatePlayPauseIcon();
     });
 
     closeFullscreen.addEventListener('click', () => {
       fullscreenPlayer.classList.remove('active');
+    });
+
+    playPauseBtn.addEventListener('click', togglePlay);
+
+    function togglePlay() {
+      if (audio.paused) {
+        audio.play();
+        fullscreenPlayer.classList.add('playing');
+        playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+      } else {
+        audio.pause();
+        fullscreenPlayer.classList.remove('playing');
+        playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+      }
+    }
+
+    function updatePlayPauseIcon() {
+      playPauseBtn.innerHTML = audio.paused ? 
+        '<i class="fas fa-play"></i>' : 
+        '<i class="fas fa-pause"></i>';
+    }
+
+    audio.addEventListener('timeupdate', updateProgress);
+    progressBar.addEventListener('click', setProgress);
+
+    function updateProgress() {
+      const percent = (audio.currentTime / audio.duration) * 100;
+      progress.style.width = percent + '%';
+      
+      currentTimeSpan.textContent = formatTime(audio.currentTime);
+      totalTimeSpan.textContent = formatTime(audio.duration);
+    }
+
+    function setProgress(e) {
+      const width = this.clientWidth;
+      const clickX = e.offsetX;
+      const duration = audio.duration;
+      audio.currentTime = (clickX / width) * duration;
+    }
+
+    function formatTime(seconds) {
+      if (isNaN(seconds)) return '0:00';
+      
+      const minutes = Math.floor(seconds / 60);
+      seconds = Math.floor(seconds % 60);
+      return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    audio.addEventListener('play', () => {
+      fullscreenPlayer.classList.add('playing');
+      updatePlayPauseIcon();
+    });
+
+    audio.addEventListener('pause', () => {
+      fullscreenPlayer.classList.remove('playing');
+      updatePlayPauseIcon();
     });
 
     // Modal Popup
@@ -633,7 +859,7 @@ UI Upgrade by JuliXBR4VO
     };
 
     // Button generation
-    const buttonTitles = ['2023','English Songs','Edward Maya','Zack Knight','Akcent','Arijit Singh','Enrique Iglesias','Pitbull','Imran Khan', 'DJ Snake', 'Darshan Raval', 'Jubin Nautiyal', 'Armaan Malik', 'Old Songs',"Adele","Billie Eilish","Imagine Dragons","Ed Sheeran","Neha Kakkar", "Badshah", "Atif Aslam", "Guru Randhawa", "Shreya Ghoshal", "Tony Kakkar", "Harrdy Sandhu", "Armaan Malik", "Diljit Dosanjh", "Sonu Nigam", "Vishal Dadlani", "Kanika Kapoor", "Sukhwinder Singh", "Sunidhi Chauhan", "Mika Singh", "Shaan", "Mohit Chauhan", "Pritam", "KK", "Yo Yo Honey Singh","Taylor Swift","Sia","Radioactive","Halsey","The Chainsmokers","Drake","Justin Bieber","Beyonce","The Weeknd","Rihanna","Lady Gaga","AC/DC","Michael Jackson","The Rolling Stones"];
+    const buttonTitles = ['2023','English Songs','Edward Maya','Zack Knight','Akcent','Arijit Singh','Enrique Iglesias','Pitbull','Imran Khan', 'DJ Snake', 'Darshan Raval', 'Jubin Nautiyal', 'Armaan Malik'];
 
     const buttonContainer = document.querySelector('.button-container');
 
@@ -645,21 +871,18 @@ UI Upgrade by JuliXBR4VO
       buttonContainer.appendChild(button);
     });
 
-    // Modify existing SaavnSearch function to include loading animation
+    // Search functions with loading animation
     const originalSaavnSearch = window.SaavnSearch;
     window.SaavnSearch = function() {
       showLoader();
       originalSaavnSearch();
-      // Hide loader after search completes (you might need to modify this timing)
       setTimeout(hideLoader, 1500);
     }
 
-    // Modify existing doSaavnSearch function to include loading animation
     const originalDoSaavnSearch = window.doSaavnSearch;
     window.doSaavnSearch = function(query) {
       showLoader();
       originalDoSaavnSearch(query);
-      // Hide loader after search completes (you might need to modify this timing)
       setTimeout(hideLoader, 1500);
     }
   </script>
