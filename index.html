@@ -926,20 +926,42 @@ UI Upgrade by JuliXBR4VO
     });
 
     // Audio Context und Analyzer Setup
-    let audioContext, analyser, dataArray;
+    let audioContext, analyser, dataArray, audioSource;
     
     function setupAudioAnalyzer() {
       if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioContext.createAnalyser();
-        const source = audioContext.createMediaElementSource(audio);
-        source.connect(analyser);
-        analyser.connect(audioContext.destination);
-        
-        analyser.fftSize = 64;
-        dataArray = new Uint8Array(analyser.frequencyBinCount);
+        try {
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          analyser = audioContext.createAnalyser();
+          audioSource = audioContext.createMediaElementSource(audio);
+          
+          // Verbinde die Audio-Nodes in der richtigen Reihenfolge
+          audioSource.connect(analyser);
+          analyser.connect(audioContext.destination);
+          
+          analyser.fftSize = 64;
+          dataArray = new Uint8Array(analyser.frequencyBinCount);
+        } catch (e) {
+          console.error('Audio Analyzer Setup fehlgeschlagen:', e);
+        }
       }
     }
+
+    // Event-Listener für Audio-Interaktionen
+    audio.addEventListener('play', () => {
+      fullscreenPlayer.classList.add('playing');
+      updatePlayPauseIcon();
+      
+      // Stelle sicher, dass der Audio-Kontext erstellt wird
+      if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+      if (!audioContext) {
+        setupAudioAnalyzer();
+      }
+      document.querySelector('.vinyl-disc').classList.add('active');
+      updateVinylVisualization();
+    });
 
     function updateVinylVisualization() {
       if (!audioContext || audio.paused) return;
