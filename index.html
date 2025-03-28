@@ -536,6 +536,35 @@ UI Upgrade by JuliXBR4VO
     .search-toggle:nth-child(10n+8){color:#21a9af}
     .search-toggle:nth-child(10n+9){color:#ffc107}
     .search-toggle:nth-child(10n+10){color:#e316e7}
+    
+    /* Lazy Loading Styles */
+    .lazy-image {
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+    
+    .lazy-image.loaded {
+      opacity: 1;
+    }
+    
+    /* Placeholder für Bilder */
+    .image-placeholder {
+      background: linear-gradient(135deg, var(--card-bg), var(--dark-bg));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+    
+    .image-container {
+      position: relative;
+      overflow: hidden;
+    }
   </style>
 </head>
 
@@ -663,7 +692,12 @@ UI Upgrade by JuliXBR4VO
   <div id="audio-player">
     <div class="row align-items-center">
       <div class="col-auto">
-        <img class="img-fluid" id="player-image" style="height: 75px;width: 75px;" src="https://i.pinimg.com/originals/ed/54/d2/ed54d2fa700d36d4f2671e1be84651df.jpg" loading="lazy">
+        <div class="image-container">
+          <div class="image-placeholder">
+            <i class="fas fa-music" style="font-size: 24px; color: var(--primary-color);"></i>
+          </div>
+          <img class="img-fluid lazy-image" id="player-image" style="height: 75px;width: 75px;" data-src="https://i.pinimg.com/originals/ed/54/d2/ed54d2fa700d36d4f2671e1be84651df.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" loading="lazy">
+        </div>
       </div>
       <div class="col">
         <div class="mb-1">
@@ -732,8 +766,10 @@ UI Upgrade by JuliXBR4VO
     
     // When player image is clicked: open fullscreen, update cover, title, album and artist,
     // and set the fullscreen background to the album cover with blur effect.
+    // Entferne diesen Event-Listener, da er später neu definiert wird
+    /*
     playerImage.addEventListener('click', () => {
-      const coverSrc = playerImage.src;
+      const coverSrc = playerImage.getAttribute('data-src') || playerImage.src;
       fullscreenCover.src = coverSrc;
       fullscreenTitle.textContent = document.getElementById('player-name').textContent;
       // Here we assume that player-album contains "Album - Artist" and split by " - "
@@ -751,7 +787,9 @@ UI Upgrade by JuliXBR4VO
       fullscreenPlayer.classList.add('active');
       updatePlayPauseIcon();
     });
+    */
     
+    // Rest der originalen Fullscreen-Player Logik
     closeFullscreen.addEventListener('click', () => {
       fullscreenPlayer.classList.remove('active');
       fullscreenBg.style.backgroundImage = "";
@@ -868,6 +906,310 @@ UI Upgrade by JuliXBR4VO
       originalDoSaavnSearch(query);
       setTimeout(hideLoader, 1500);
     };
+    
+    // Lazy Loading Implementation
+    document.addEventListener("DOMContentLoaded", function() {
+      // Überprüfe ob IntersectionObserver unterstützt wird
+      if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              const src = img.getAttribute('data-src');
+              if (src) {
+                img.src = src;
+                img.onload = function() {
+                  img.classList.add('loaded');
+                  // Finde den Platzhalter, falls vorhanden
+                  const placeholder = img.parentNode.querySelector('.image-placeholder');
+                  if (placeholder) {
+                    placeholder.style.opacity = '0';
+                  }
+                };
+                observer.unobserve(img);
+              }
+            }
+          });
+        });
+
+        // Selektiere alle lazy-image Klassen
+        const lazyImages = document.querySelectorAll('.lazy-image');
+        lazyImages.forEach(img => {
+          imageObserver.observe(img);
+        });
+      } else {
+        // Fallback für Browser ohne IntersectionObserver
+        const lazyImages = document.querySelectorAll('.lazy-image');
+        lazyImages.forEach(img => {
+          img.src = img.getAttribute('data-src');
+          img.classList.add('loaded');
+        });
+      }
+    });
+
+    // Modifiziere die Albumcover-Erstellung für Suchergebnisse
+    const originalCreateSongContainer = window.createSongContainer;
+    if (typeof originalCreateSongContainer === 'function') {
+      window.createSongContainer = function(song) {
+        const container = originalCreateSongContainer(song);
+        
+        // Finde das Albumbild im Container und konvertiere es zu lazy loading
+        const img = container.querySelector('img');
+        if (img) {
+          // Erstelle einen Container für das Bild und den Platzhalter
+          const imageContainer = document.createElement('div');
+          imageContainer.className = 'image-container';
+          
+          // Erstelle den Platzhalter
+          const placeholder = document.createElement('div');
+          placeholder.className = 'image-placeholder';
+          placeholder.innerHTML = '<i class="fas fa-music" style="font-size: 24px; color: var(--primary-color);"></i>';
+          
+          // Bereite das Bild für lazy loading vor
+          const originalSrc = img.src;
+          img.setAttribute('data-src', originalSrc);
+          img.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 1 1\'%3E%3C/svg%3E';
+          img.classList.add('lazy-image');
+          
+          // Organisiere die DOM-Struktur
+          img.parentNode.insertBefore(imageContainer, img);
+          imageContainer.appendChild(placeholder);
+          imageContainer.appendChild(img);
+        }
+        
+        return container;
+      };
+    }
+    
+    // Korrigierte Version des Player-Image-Klick Event-Listeners
+    playerImage.addEventListener('click', function() {
+      // Wir müssen sicherstellen, dass wir das tatsächliche Bild oder die data-src bekommen
+      let actualImageSrc;
+      
+      // Wenn das Bild bereits geladen wurde, verwende src, sonst data-src
+      if (playerImage.classList.contains('loaded')) {
+        actualImageSrc = playerImage.src;
+      } else {
+        actualImageSrc = playerImage.getAttribute('data-src');
+        // Sicherheitsmaßnahme: Lade das Bild sofort, wenn es noch nicht geladen wurde
+        playerImage.src = actualImageSrc;
+        playerImage.classList.add('loaded');
+        const placeholder = playerImage.parentNode.querySelector('.image-placeholder');
+        if (placeholder) {
+          placeholder.style.opacity = '0';
+        }
+      }
+      
+      // Jetzt setzen wir das Bild für den Fullscreen-Player
+      fullscreenCover.src = actualImageSrc;
+      fullscreenTitle.textContent = document.getElementById('player-name').textContent;
+      
+      // Here we assume that player-album contains "Album - Artist" and split by " - "
+      let albumArtist = document.getElementById('player-album').textContent;
+      let parts = albumArtist.split(' - ');
+      if(parts.length >= 2) {
+        fullscreenAlbum.textContent = parts[0];
+        fullscreenArtist.textContent = parts[1];
+      } else {
+        fullscreenAlbum.textContent = albumArtist;
+        fullscreenArtist.textContent = "";
+      }
+      
+      // Set the blurred background to album cover
+      fullscreenBg.style.backgroundImage = "url('" + actualImageSrc + "')";
+      fullscreenPlayer.classList.add('active');
+      updatePlayPauseIcon();
+    });
+    
+    // Hooks für dynamisch hinzugefügte Bilder
+    const originalPlaySong = window.playSong;
+    if (typeof originalPlaySong === 'function') {
+      window.playSong = function(e) {
+        originalPlaySong(e);
+        
+        // Stelle sicher, dass das Player-Image richtig geladen wird
+        setTimeout(function() {
+          const playerImg = document.getElementById('player-image');
+          if (playerImg && playerImg.getAttribute('data-src')) {
+            playerImg.src = playerImg.getAttribute('data-src');
+            playerImg.classList.add('loaded');
+            const placeholder = playerImg.parentNode.querySelector('.image-placeholder');
+            if (placeholder) {
+              placeholder.style.opacity = '0';
+            }
+          }
+        }, 100); // Kleine Verzögerung, um sicherzustellen, dass das Bild aktualisiert wurde
+      };
+    }
+    
+    // Beobachter für dynamisch hinzugefügte Bilder aktivieren
+    const refreshLazyImages = function() {
+      if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              const src = img.getAttribute('data-src');
+              if (src) {
+                img.src = src;
+                img.onload = function() {
+                  img.classList.add('loaded');
+                  const placeholder = img.parentNode.querySelector('.image-placeholder');
+                  if (placeholder) {
+                    placeholder.style.opacity = '0';
+                  }
+                };
+                observer.unobserve(img);
+              }
+            }
+          });
+        });
+
+        const lazyImages = document.querySelectorAll('.lazy-image:not(.loaded)');
+        lazyImages.forEach(img => {
+          imageObserver.observe(img);
+        });
+      }
+    };
+    
+    // Nach Suche und beim Laden weiterer Ergebnisse Lazy Loading aktualisieren
+    document.addEventListener('DOMNodeInserted', function(e) {
+      if (e.target.classList && (
+          e.target.classList.contains('song-container') || 
+          e.target.querySelector && e.target.querySelector('.song-container'))) {
+        setTimeout(refreshLazyImages, 100);
+      }
+    });
+
+    // Neudefinition des Player-Image-Klick Event-Listeners mit debugging
+    document.addEventListener("DOMContentLoaded", function() {
+        const playerImg = document.getElementById('player-image');
+        
+        if (playerImg) {
+            console.log("Player image found, setting up click event");
+            playerImg.addEventListener('click', function() {
+                console.log("Player image clicked");
+                // Wir müssen sicherstellen, dass wir das tatsächliche Bild oder die data-src bekommen
+                let actualImageSrc;
+                
+                // Wenn das Bild bereits geladen wurde, verwende src, sonst data-src
+                if (playerImg.classList.contains('loaded')) {
+                    actualImageSrc = playerImg.src;
+                } else {
+                    actualImageSrc = playerImg.getAttribute('data-src');
+                    // Sicherheitsmaßnahme: Lade das Bild sofort, wenn es noch nicht geladen wurde
+                    playerImg.src = actualImageSrc;
+                    playerImg.classList.add('loaded');
+                    const placeholder = playerImg.parentNode.querySelector('.image-placeholder');
+                    if (placeholder) {
+                        placeholder.style.opacity = '0';
+                    }
+                }
+                
+                console.log("Image source:", actualImageSrc);
+                
+                // Jetzt setzen wir das Bild für den Fullscreen-Player
+                fullscreenCover.src = actualImageSrc;
+                fullscreenTitle.textContent = document.getElementById('player-name').textContent;
+                
+                // Here we assume that player-album contains "Album - Artist" and split by " - "
+                let albumArtist = document.getElementById('player-album').textContent;
+                let parts = albumArtist.split(' - ');
+                if(parts.length >= 2) {
+                    fullscreenAlbum.textContent = parts[0];
+                    fullscreenArtist.textContent = parts[1];
+                } else {
+                    fullscreenAlbum.textContent = albumArtist;
+                    fullscreenArtist.textContent = "";
+                }
+                
+                // Set the blurred background to album cover
+                fullscreenBg.style.backgroundImage = "url('" + actualImageSrc + "')";
+                fullscreenPlayer.classList.add('active');
+                updatePlayPauseIcon();
+                
+                console.log("Fullscreen player should be visible now");
+            });
+        } else {
+            console.error("Player image not found in DOM");
+        }
+    });
+    
+    // Füge Klick-Handler später dem Container hinzu (falls der direkte Click auf dem Image nicht funktioniert)
+    document.addEventListener("DOMContentLoaded", function() {
+        const playerImgContainer = document.querySelector('#player-image').parentNode;
+        
+        if (playerImgContainer) {
+            playerImgContainer.addEventListener('click', function() {
+                console.log("Player image container clicked");
+                const playerImg = document.getElementById('player-image');
+                let actualImageSrc;
+                
+                if (playerImg.classList.contains('loaded')) {
+                    actualImageSrc = playerImg.src;
+                } else {
+                    actualImageSrc = playerImg.getAttribute('data-src');
+                    playerImg.src = actualImageSrc;
+                    playerImg.classList.add('loaded');
+                }
+                
+                fullscreenCover.src = actualImageSrc;
+                fullscreenTitle.textContent = document.getElementById('player-name').textContent;
+                
+                let albumArtist = document.getElementById('player-album').textContent;
+                let parts = albumArtist.split(' - ');
+                if(parts.length >= 2) {
+                    fullscreenAlbum.textContent = parts[0];
+                    fullscreenArtist.textContent = parts[1];
+                } else {
+                    fullscreenAlbum.textContent = albumArtist;
+                    fullscreenArtist.textContent = "";
+                }
+                
+                fullscreenBg.style.backgroundImage = "url('" + actualImageSrc + "')";
+                fullscreenPlayer.classList.add('active');
+                updatePlayPauseIcon();
+            });
+        }
+    });
+    
+    // Entfernen des alten Click-Event-Listeners
+    // Hier wird der alte Listener ersetzt, damit er nicht doppelt ausgeführt wird
+    playerImage.removeEventListener('click', function() {
+        // Leer, wird nur verwendet, um den alten Listener zu ersetzen
+    });
+    
+    // Nach Suche und beim Laden weiterer Ergebnisse Lazy Loading aktualisieren
+    document.addEventListener('DOMNodeInserted', function(e) {
+        if (e.target.classList && (
+            e.target.classList.contains('song-container') || 
+            e.target.querySelector && e.target.querySelector('.song-container'))) {
+          setTimeout(refreshLazyImages, 100);
+        }
+    });
+    
+    // Überprüfen und Aktualisieren des Fullscreen-Players, wenn Audio geladen wird
+    audio.addEventListener('loadedmetadata', function() {
+        // Stelle sicher, dass der Vollbildplayer die korrekten Daten hat
+        const playerImg = document.getElementById('player-image');
+        if (playerImg) {
+            let actualImageSrc = playerImg.getAttribute('data-src') || playerImg.src;
+            fullscreenCover.src = actualImageSrc;
+            fullscreenTitle.textContent = document.getElementById('player-name').textContent;
+            
+            let albumArtist = document.getElementById('player-album').textContent;
+            let parts = albumArtist.split(' - ');
+            if(parts.length >= 2) {
+                fullscreenAlbum.textContent = parts[0];
+                fullscreenArtist.textContent = parts[1];
+            } else {
+                fullscreenAlbum.textContent = albumArtist;
+                fullscreenArtist.textContent = "";
+            }
+            
+            fullscreenBg.style.backgroundImage = "url('" + actualImageSrc + "')";
+        }
+    });
   </script>
   <script src="assets/js/functions.js"></script>
   <script src="assets/js/saavn-search.js"></script>
