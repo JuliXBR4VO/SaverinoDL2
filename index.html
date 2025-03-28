@@ -810,26 +810,57 @@ UI Upgrade by JuliXBR4VO
       document.querySelector('.loader-container').style.display = 'none';
     }
     
-    // Basis-Variablen
+    // Basis-Variablen und Audio Setup
     const audio = document.getElementById('player');
     const fullscreenPlayer = document.querySelector('.fullscreen-player');
-    const fullscreenBg = document.querySelector('.fullscreen-bg');
-    const playerImage = document.getElementById('player-image');
-    const closeFullscreen = document.querySelector('.close-fullscreen');
-    const fullscreenCover = document.querySelector('.fullscreen-cover');
-    const fullscreenTitle = document.querySelector('.fullscreen-title');
-    const fullscreenArtist = document.querySelector('.fullscreen-artist');
-    const fullscreenAlbum = document.querySelector('.fullscreen-album');
-    const playPauseBtn = document.getElementById('play-pause-btn');
-    const progressBar = document.querySelector('.progress-bar');
-    const progress = document.querySelector('.progress');
-    const currentTimeSpan = document.querySelector('.current-time');
-    const totalTimeSpan = document.querySelector('.total-time');
-
-    // Audio Analyzer Setup
     let audioContext = null;
     let audioSource = null;
     let analyser = null;
+    
+    // Audio Setup Funktion - wird nur einmal ausgeführt
+    async function initAudioContext() {
+      if (!audioContext) {
+        try {
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          audioSource = audioContext.createMediaElementSource(audio);
+          analyser = audioContext.createAnalyser();
+          analyser.fftSize = 64;
+          
+          // Wichtig: Zuerst zum Destination, dann zum Analyser
+          audioSource.connect(audioContext.destination);
+          audioSource.connect(analyser);
+        } catch (error) {
+          console.error('Audio Setup fehlgeschlagen:', error);
+        }
+      }
+      
+      if (audioContext.state === 'suspended') {
+        await audioContext.resume();
+      }
+    }
+
+    // Audio Event Handler
+    audio.addEventListener('play', async () => {
+      await initAudioContext(); // Audio Setup sicherstellen
+      fullscreenPlayer.classList.add('playing');
+      document.querySelector('.vinyl-disc').classList.add('active');
+      updatePlayPauseIcon();
+      requestAnimationFrame(updateVinylVisualization);
+    });
+
+    // Rest der Visualizer Funktionalität
+    function updateVinylVisualization() {
+      if (!analyser || audio.paused) return;
+      
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+      analyser.getByteFrequencyData(dataArray);
+      
+      const average = dataArray.reduce((acc, val) => acc + val, 0) / dataArray.length;
+      const scale = 1 + (average / 512);
+      
+      document.querySelector('.vinyl-disc').style.setProperty('--scale-factor', scale);
+      requestAnimationFrame(updateVinylVisualization);
+    }
 
     // Fullscreen Player
     playerImage.addEventListener('click', () => {
@@ -874,27 +905,6 @@ UI Upgrade by JuliXBR4VO
     }
 
     // Audio Events
-    audio.addEventListener('play', async () => {
-      if (!audioContext) {
-        try {
-          audioContext = new (window.AudioContext || window.webkitAudioContext)();
-          audioSource = audioContext.createMediaElementSource(audio);
-          analyser = audioContext.createAnalyser();
-          analyser.fftSize = 64;
-          
-          audioSource.connect(analyser);
-          analyser.connect(audioContext.destination);
-        } catch (error) {
-          console.error('Audio Setup fehlgeschlagen:', error);
-        }
-      }
-      
-      fullscreenPlayer.classList.add('playing');
-      document.querySelector('.vinyl-disc').classList.add('active');
-      updatePlayPauseIcon();
-      requestAnimationFrame(updateVinylVisualization);
-    });
-
     audio.addEventListener('pause', () => {
       fullscreenPlayer.classList.remove('playing');
       document.querySelector('.vinyl-disc').classList.remove('active');
@@ -902,20 +912,6 @@ UI Upgrade by JuliXBR4VO
     });
 
     // Rest der Audio-Funktionen
-    function updateVinylVisualization() {
-      if (!analyser || audio.paused) return;
-      
-      const dataArray = new Uint8Array(analyser.frequencyBinCount);
-      analyser.getByteFrequencyData(dataArray);
-      
-      const average = dataArray.reduce((acc, val) => acc + val, 0) / dataArray.length;
-      const scale = 1 + (average / 512);
-      
-      document.querySelector('.vinyl-disc').style.setProperty('--scale-factor', scale);
-      requestAnimationFrame(updateVinylVisualization);
-    }
-
-    // Bestehende Funktionen für Progress etc. beibehalten
     // Forward and Backward Controls: skip 10 seconds
     document.getElementById('prev-btn').addEventListener('click', () => {
       audio.currentTime = Math.max(audio.currentTime - 10, 0);
