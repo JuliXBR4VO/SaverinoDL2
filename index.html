@@ -44,7 +44,6 @@ UI Upgrade by JuliXBR4VO
       z-index: 9999;
       backdrop-filter: blur(5px);
     }
-
     .loader {
       width: 50px;
       height: 50px;
@@ -53,13 +52,12 @@ UI Upgrade by JuliXBR4VO
       border-top-color: var(--primary-color);
       animation: spin 1s ease-in-out infinite;
     }
-
     @keyframes spin {
       to {
         transform: rotate(360deg);
       }
     }
-
+    
     /* Improved Fullscreen Player */
     .fullscreen-player {
       position: fixed;
@@ -67,7 +65,7 @@ UI Upgrade by JuliXBR4VO
       left: 0;
       width: 100%;
       height: 100%;
-      /* Default background if no album cover is set */
+      /* Default fallback background */
       background: linear-gradient(135deg, rgba(18, 18, 18, 0.95), rgba(40, 40, 40, 0.95));
       z-index: 2000;
       display: none;
@@ -75,23 +73,33 @@ UI Upgrade by JuliXBR4VO
       align-items: center;
       flex-direction: column;
       transition: all 0.5s ease;
-      /* Background will be updated dynamically with album cover */
+      overflow: hidden;
+    }
+    
+    /* The blurred album cover background */
+    .fullscreen-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background-size: cover;
       background-position: center;
-      backdrop-filter: blur(20px);
+      filter: blur(20px);
+      z-index: -1;
     }
-
+    
     .fullscreen-player.active {
       display: flex;
     }
-
+    
     .cover-wrapper {
       position: relative;
       width: 300px;
       height: 300px;
       margin-bottom: 40px;
     }
-
+    
     .vinyl-disc {
       position: absolute;
       top: 50%;
@@ -114,12 +122,12 @@ UI Upgrade by JuliXBR4VO
       opacity: 0;
       transition: all 0.5s ease;
     }
-
+    
     .fullscreen-player.playing .vinyl-disc {
       opacity: 1;
       animation: spinDisc 4s linear infinite;
     }
-
+    
     .fullscreen-cover {
       position: relative;
       width: 300px;
@@ -129,43 +137,42 @@ UI Upgrade by JuliXBR4VO
       margin-bottom: 30px;
       transition: all 0.5s ease;
       z-index: 1;
-      object-fit: cover;  /* Improves cover quality */
     }
-
+    
     .fullscreen-player.playing .fullscreen-cover {
       transform: translateX(-40%) rotate(-2deg);
     }
-
+    
     .fullscreen-info {
       text-align: center;
       margin-bottom: 30px;
       width: 80%;
       max-width: 400px;
     }
-
+    
     .fullscreen-title {
       font-size: 28px;
       font-weight: 600;
       margin-bottom: 10px;
       color: white;
     }
-
+    
     .fullscreen-artist {
       font-size: 20px;
       color: var(--primary-color);
       margin-bottom: 5px;
     }
-
+    
     .fullscreen-album {
       font-size: 16px;
       color: var(--text-secondary);
     }
-
+    
     .fullscreen-controls {
       width: 80%;
       max-width: 400px;
     }
-
+    
     .progress-bar {
       width: 100%;
       height: 6px;
@@ -175,7 +182,7 @@ UI Upgrade by JuliXBR4VO
       cursor: pointer;
       position: relative;
     }
-
+    
     .progress {
       width: 0%;
       height: 100%;
@@ -184,7 +191,7 @@ UI Upgrade by JuliXBR4VO
       position: absolute;
       transition: width 0.1s linear;
     }
-
+    
     .time-info {
       display: flex;
       justify-content: space-between;
@@ -192,14 +199,14 @@ UI Upgrade by JuliXBR4VO
       font-size: 14px;
       margin-bottom: 20px;
     }
-
+    
     .control-buttons {
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 30px;
     }
-
+    
     .control-btn {
       background: none;
       border: none;
@@ -214,23 +221,23 @@ UI Upgrade by JuliXBR4VO
       justify-content: center;
       transition: all 0.3s ease;
     }
-
+    
     .control-btn:hover {
       background: rgba(255,255,255,0.1);
     }
-
+    
     #play-pause-btn {
       font-size: 30px;
       background: var(--primary-color);
       width: 60px;
       height: 60px;
     }
-
+    
     #play-pause-btn:hover {
       transform: scale(1.1);
       background: var(--secondary-color);
     }
-
+    
     .close-fullscreen {
       position: absolute;
       top: 20px;
@@ -245,12 +252,12 @@ UI Upgrade by JuliXBR4VO
       cursor: pointer;
       transition: all 0.3s ease;
     }
-
+    
     .close-fullscreen:hover {
       background: rgba(255,255,255,0.2);
       transform: rotate(90deg);
     }
-
+    
     @keyframes spinDisc {
       from {
         transform: translate(-50%, -50%) rotate(0deg);
@@ -283,7 +290,7 @@ UI Upgrade by JuliXBR4VO
       box-shadow: 0 5px 15px rgba(0,0,0,0.5);
       animation: modalSlideIn 0.3s ease;
     }
-
+    
     @keyframes modalSlideIn {
       from {
         transform: translateY(-20px);
@@ -308,7 +315,7 @@ UI Upgrade by JuliXBR4VO
       cursor: pointer;
       transition: transform 0.3s ease;
     }
-
+    
     .close:hover {
       transform: rotate(90deg);
     }
@@ -320,7 +327,7 @@ UI Upgrade by JuliXBR4VO
       border-bottom: 1px solid rgba(255,255,255,0.1);
       transition: transform 0.3s ease;
     }
-
+    
     #download-list li:hover {
       transform: translateX(10px);
     }
@@ -457,7 +464,6 @@ UI Upgrade by JuliXBR4VO
       box-shadow: 0 5px 15px rgba(0,0,0,0.3);
       cursor: pointer;
       transition: transform 0.3s ease;
-      object-fit: cover;  /* Improves cover quality */
     }
     
     #player-image:hover {
@@ -541,6 +547,9 @@ UI Upgrade by JuliXBR4VO
 
   <!-- Improved Fullscreen Player -->
   <div class="fullscreen-player">
+    <!-- Blurred Background using the album cover -->
+    <div class="fullscreen-bg"></div>
+    
     <div class="close-fullscreen">
       <i class="fas fa-times"></i>
     </div>
@@ -701,14 +710,14 @@ UI Upgrade by JuliXBR4VO
     function showLoader() {
       document.querySelector('.loader-container').style.display = 'flex';
     }
-
     function hideLoader() {
       document.querySelector('.loader-container').style.display = 'none';
     }
-
+    
     // Improved Fullscreen Player Functionality
     const audio = document.getElementById('player');
     const fullscreenPlayer = document.querySelector('.fullscreen-player');
+    const fullscreenBg = document.querySelector('.fullscreen-bg');
     const playerImage = document.getElementById('player-image');
     const closeFullscreen = document.querySelector('.close-fullscreen');
     const fullscreenCover = document.querySelector('.fullscreen-cover');
@@ -720,37 +729,36 @@ UI Upgrade by JuliXBR4VO
     const progress = document.querySelector('.progress');
     const currentTimeSpan = document.querySelector('.current-time');
     const totalTimeSpan = document.querySelector('.total-time');
-
-    // When player image is clicked: open fullscreen and use album cover as background
+    
+    // When player image is clicked: open fullscreen, update cover, title, album and artist,
+    // and set the fullscreen background to the album cover with blur effect.
     playerImage.addEventListener('click', () => {
       const coverSrc = playerImage.src;
       fullscreenCover.src = coverSrc;
       fullscreenTitle.textContent = document.getElementById('player-name').textContent;
-      // Assuming the album element now contains the artist and album separated by " - "
-      const albumText = document.getElementById('player-album').textContent;
-      const parts = albumText.split(' - ');
-      // If two parts are found, first is artist, second is album
+      // Here we assume that player-album contains "Album - Artist" and split by " - "
+      let albumArtist = document.getElementById('player-album').textContent;
+      let parts = albumArtist.split(' - ');
       if(parts.length >= 2) {
-        fullscreenArtist.textContent = parts[0];
-        fullscreenAlbum.textContent = parts[1];
+        fullscreenAlbum.textContent = parts[0];
+        fullscreenArtist.textContent = parts[1];
       } else {
+        fullscreenAlbum.textContent = albumArtist;
         fullscreenArtist.textContent = "";
-        fullscreenAlbum.textContent = albumText;
       }
-      // Set the fullscreen background to album cover
-      fullscreenPlayer.style.backgroundImage = "url('" + coverSrc + "')";
+      // Set the blurred background to album cover
+      fullscreenBg.style.backgroundImage = "url('" + coverSrc + "')";
       fullscreenPlayer.classList.add('active');
       updatePlayPauseIcon();
     });
-
+    
     closeFullscreen.addEventListener('click', () => {
       fullscreenPlayer.classList.remove('active');
-      // Optionally clear background image
-      fullscreenPlayer.style.backgroundImage = "";
+      fullscreenBg.style.backgroundImage = "";
     });
-
+    
     playPauseBtn.addEventListener('click', togglePlay);
-
+    
     function togglePlay() {
       if (audio.paused) {
         audio.play();
@@ -762,13 +770,13 @@ UI Upgrade by JuliXBR4VO
         playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
       }
     }
-
+    
     function updatePlayPauseIcon() {
       playPauseBtn.innerHTML = audio.paused ? 
         '<i class="fas fa-play"></i>' : 
         '<i class="fas fa-pause"></i>';
     }
-
+    
     // Forward and Backward Controls: skip 10 seconds
     document.getElementById('prev-btn').addEventListener('click', () => {
       audio.currentTime = Math.max(audio.currentTime - 10, 0);
@@ -778,56 +786,54 @@ UI Upgrade by JuliXBR4VO
         audio.currentTime = Math.min(audio.currentTime + 10, audio.duration);
       }
     });
-
+    
     audio.addEventListener('timeupdate', updateProgress);
     progressBar.addEventListener('click', setProgress);
-
+    
     function updateProgress() {
       const percent = (audio.currentTime / audio.duration) * 100;
       progress.style.width = percent + '%';
-      
       currentTimeSpan.textContent = formatTime(audio.currentTime);
       totalTimeSpan.textContent = formatTime(audio.duration);
     }
-
+    
     function setProgress(e) {
       const width = this.clientWidth;
       const clickX = e.offsetX;
       const duration = audio.duration;
       audio.currentTime = (clickX / width) * duration;
     }
-
+    
     function formatTime(seconds) {
       if (isNaN(seconds)) return '0:00';
-      
       const minutes = Math.floor(seconds / 60);
       seconds = Math.floor(seconds % 60);
       return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     }
-
+    
     audio.addEventListener('play', () => {
       fullscreenPlayer.classList.add('playing');
       updatePlayPauseIcon();
     });
-
+    
     audio.addEventListener('pause', () => {
       fullscreenPlayer.classList.remove('playing');
       updatePlayPauseIcon();
     });
-
+    
     // Modal Popup for Downloads Upgrade
     var mpopup = document.getElementById('mpopupBox');
     var mpLink = document.getElementById("mpopupLink");
     var closeModal = document.getElementsByClassName("close")[0];
-
+    
     mpLink.onclick = function() {
       mpopup.style.display = "block";
     };
-
+    
     closeModal.onclick = function() {
       mpopup.style.display = "none";
     };
-
+    
     window.onclick = function(event) {
       if (event.target == mpopup) {
         mpopup.style.display = "none";
@@ -836,12 +842,10 @@ UI Upgrade by JuliXBR4VO
         fullscreenPlayer.classList.remove('active');
       }
     };
-
+    
     // Button generation (unchanged)
     const buttonTitles = ['2023','English Songs','Edward Maya','Zack Knight','Akcent','Arijit Singh','Enrique Iglesias','Pitbull','Imran Khan', 'DJ Snake', 'Darshan Raval', 'Jubin Nautiyal', 'Armaan Malik'];
-
     const buttonContainer = document.querySelector('.button-container');
-
     buttonTitles.forEach(title => {
       const button = document.createElement('button');
       button.classList.add('search-toggle');
@@ -849,21 +853,21 @@ UI Upgrade by JuliXBR4VO
       button.setAttribute('onclick', `doSaavnSearch('${title}')`);
       buttonContainer.appendChild(button);
     });
-
+    
     // Search functions with loading animation (unchanged)
     const originalSaavnSearch = window.SaavnSearch;
     window.SaavnSearch = function() {
       showLoader();
       originalSaavnSearch();
       setTimeout(hideLoader, 1500);
-    }
-
+    };
+    
     const originalDoSaavnSearch = window.doSaavnSearch;
     window.doSaavnSearch = function(query) {
       showLoader();
       originalDoSaavnSearch(query);
       setTimeout(hideLoader, 1500);
-    }
+    };
   </script>
   <script src="assets/js/functions.js"></script>
   <script src="assets/js/saavn-search.js"></script>
