@@ -98,6 +98,7 @@ UI Upgrade by JuliXBR4VO
       width: 300px;
       height: 300px;
       margin-bottom: 40px;
+      overflow: visible; /* Erlaubt sichtbare Überlagerung */
     }
     
     .vinyl-disc {
@@ -121,6 +122,7 @@ UI Upgrade by JuliXBR4VO
       transform: translate(-50%, -50%);
       opacity: 0;
       transition: all 0.5s ease;
+      z-index: 0;
     }
     
     .fullscreen-player.playing .vinyl-disc {
