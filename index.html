@@ -1055,30 +1055,37 @@ UI Upgrade by JuliXBR4VO
       };
     });
 
-    // Entferne alle vorherigen Audio-Event-Listener und ersetze sie mit dieser Version
+    // Entferne alle vorherigen Audio-bezogenen Variablen und Event-Listener
+    const audio = document.getElementById('player');
+    const fullscreenPlayer = document.querySelector('.fullscreen-player');
     let audioContext = null;
     let audioSource = null;
     let analyser = null;
 
+    // Zentrale Audio-Initialisierung
     function initAudio() {
       if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        audioSource = audioContext.createMediaElementSource(audio);
-        analyser = audioContext.createAnalyser();
-        analyser.fftSize = 64;
-        
-        // Wichtig: Erst zum Analyser, dann zum Destination
-        audioSource.connect(analyser);
-        analyser.connect(audioContext.destination);
+        try {
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          audioSource = audioContext.createMediaElementSource(audio);
+          analyser = audioContext.createAnalyser();
+          analyser.fftSize = 64;
+          
+          // Wichtig: Die richtige Verbindungsreihenfolge
+          audioSource.connect(analyser);
+          audioSource.connect(audioContext.destination);
+        } catch (error) {
+          console.error('Audio Setup fehlgeschlagen:', error);
+        }
       }
     }
 
-    audio.addEventListener('play', () => {
+    // Ein einziger Play-Event-Listener
+    audio.addEventListener('play', async () => {
       if (!audioContext) {
-        initAudio();
-      }
-      if (audioContext.state === 'suspended') {
-        audioContext.resume();
+        await initAudio();
+      } else if (audioContext.state === 'suspended') {
+        await audioContext.resume();
       }
       
       fullscreenPlayer.classList.add('playing');
@@ -1087,14 +1094,37 @@ UI Upgrade by JuliXBR4VO
       requestAnimationFrame(updateVinylVisualization);
     });
 
+    // Ein einziger Pause-Event-Listener
     audio.addEventListener('pause', () => {
       fullscreenPlayer.classList.remove('playing');
       document.querySelector('.vinyl-disc').classList.remove('active');
       updatePlayPauseIcon();
     });
 
+    // Fullscreen Player Click Handler
+    playerImage.addEventListener('click', () => {
+      const coverSrc = playerImage.src;
+      fullscreenCover.src = coverSrc;
+      fullscreenTitle.textContent = document.getElementById('player-name').textContent;
+      
+      let albumArtist = document.getElementById('player-album').textContent;
+      let parts = albumArtist.split(' - ');
+      if(parts.length >= 2) {
+        fullscreenAlbum.textContent = parts[0];
+        fullscreenArtist.textContent = parts[1];
+      } else {
+        fullscreenAlbum.textContent = albumArtist;
+        fullscreenArtist.textContent = "";
+      }
+      
+      fullscreenBg.style.backgroundImage = `url('${coverSrc}')`;
+      fullscreenPlayer.classList.add('active');
+      updatePlayPauseIcon();
+    });
+
+    // Vinyl Visualizer Update
     function updateVinylVisualization() {
-      if (!audioContext || !analyser || audio.paused) return;
+      if (!analyser || audio.paused) return;
       
       const dataArray = new Uint8Array(analyser.frequencyBinCount);
       analyser.getByteFrequencyData(dataArray);
@@ -1106,7 +1136,7 @@ UI Upgrade by JuliXBR4VO
       requestAnimationFrame(updateVinylVisualization);
     }
 
-    // Entferne alle doppelten Event-Listener und behalte nur die essentiellen
+    // Entferne alle anderen doppelten Audio-bezogenen Funktionen und Event-Listener
 
   </script>
   <script src="assets/js/functions.js"></script>
