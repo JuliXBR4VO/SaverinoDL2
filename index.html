@@ -109,6 +109,32 @@ UI Upgrade by JuliXBR4VO
       background-position: center;
       filter: blur(20px);
       z-index: -1;
+      animation: subtleMove 20s ease-in-out infinite;
+    }
+
+    @keyframes subtleMove {
+      0% { transform: scale(1.1) translate(0, 0); }
+      25% { transform: scale(1.1) translate(-1%, 1%); }
+      50% { transform: scale(1.1) translate(1%, -1%); }
+      75% { transform: scale(1.1) translate(1%, 1%); }
+      100% { transform: scale(1.1) translate(0, 0); }
+    }
+    
+    .fullscreen-bg::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, 
+        transparent 0%, 
+        rgba(0,0,0,0.8) 100%
+      );
+    }
+    
+    .fullscreen-player.visualizer-mode .fullscreen-bg {
+      filter: blur(30px) brightness(0.5);
     }
     
     .cover-wrapper {
@@ -126,24 +152,56 @@ UI Upgrade by JuliXBR4VO
       height: 290px;
       background: radial-gradient(circle at center, 
         #000000 0%, 
-        #333333 35%, 
-        #000000 35.5%,
-        #333333 36%,
-        #000000 36.5%,
-        #333333 37%,
-        #000000 37.5%,
-        #333333 38%,
-        #000000 38.5%
+        #333333 28%, 
+        #000000 28.5%,
+        #333333 29%,
+        #000000 29.5%,
+        #333333 30%,
+        #000000 30.5%,
+        #333333 31%,
+        transparent 31.5%
       );
       border-radius: 50%;
       transform: translate(-50%, -50%);
       opacity: 0;
-      transition: all 0.5s ease;
+      transition: opacity 0.8s ease;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      overflow: hidden;
+    }
+
+    .vinyl-disc::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        rgba(140, 82, 255, 0.2) 90deg,
+        transparent 180deg,
+        rgba(94, 23, 235, 0.2) 270deg,
+        transparent 360deg
+      );
+      transform: translate(-50%, -50%);
+      animation: vinylPattern 4s linear infinite;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .fullscreen-player.playing .vinyl-disc::after {
+      opacity: 1;
+    }
+
+    @keyframes vinylPattern {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
     }
     
     .fullscreen-player.playing .vinyl-disc {
       opacity: 1;
-      animation: spinDisc 4s linear infinite;
+      animation: spinDisc 2.5s linear infinite;
     }
     
     .fullscreen-cover {
@@ -155,10 +213,22 @@ UI Upgrade by JuliXBR4VO
       margin-bottom: 30px;
       transition: all 0.5s ease;
       z-index: 1;
+      transform-origin: center right;  /* Neuer Ankerpunkt für die Transformation */
     }
     
     .fullscreen-player.playing .fullscreen-cover {
-      transform: translateX(-40%) rotate(-2deg);
+      transform: translateX(-20%) rotate(-3deg); /* Reduzierte Translation */
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Lazy Loading Styles */
+    .lazy-image {
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .lazy-image.loaded {
+      opacity: 1;
     }
     
     .fullscreen-info {
@@ -277,10 +347,10 @@ UI Upgrade by JuliXBR4VO
     }
     
     @keyframes spinDisc {
-      from {
+      0% {
         transform: translate(-50%, -50%) rotate(0deg);
       }
-      to {
+      100% {
         transform: translate(-50%, -50%) rotate(360deg);
       }
     }
@@ -554,6 +624,13 @@ UI Upgrade by JuliXBR4VO
     .search-toggle:nth-child(10n+8){color:#21a9af}
     .search-toggle:nth-child(10n+9){color:#ffc107}
     .search-toggle:nth-child(10n+10){color:#e316e7}
+    
+    /* Visualizer Styles */
+    .visualizer-container,
+    .visualizer-toggle,
+    #audioVisualizer {
+      display: none;
+    }
   </style>
 </head>
 
@@ -886,6 +963,38 @@ UI Upgrade by JuliXBR4VO
       originalDoSaavnSearch(query);
       setTimeout(hideLoader, 1500);
     };
+
+    // Lazy Loading Implementation
+    document.addEventListener("DOMContentLoaded", function() {
+      const lazyLoadImages = function() {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              img.src = img.dataset.src;
+              img.classList.add('lazy-image');
+              img.onload = () => img.classList.add('loaded');
+              observer.unobserve(img);
+            }
+          });
+        });
+
+        // Alle Album-Cover mit data-src selektieren
+        document.querySelectorAll('img[data-src]').forEach(img => {
+          imageObserver.observe(img);
+        });
+      };
+
+      // Initial aufrufen
+      lazyLoadImages();
+
+      // Nach jedem Laden neuer Suchergebnisse aufrufen
+      const originalSaavnSearch = window.SaavnSearch;
+      window.SaavnSearch = function() {
+        originalSaavnSearch();
+        setTimeout(lazyLoadImages, 1500);
+      };
+    });
   </script>
   <script src="assets/js/functions.js"></script>
   <script src="assets/js/saavn-search.js"></script>
