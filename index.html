@@ -1054,6 +1054,60 @@ UI Upgrade by JuliXBR4VO
         setTimeout(lazyLoadImages, 1500);
       };
     });
+
+    // Entferne alle vorherigen Audio-Event-Listener und ersetze sie mit dieser Version
+    let audioContext = null;
+    let audioSource = null;
+    let analyser = null;
+
+    function initAudio() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        audioSource = audioContext.createMediaElementSource(audio);
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 64;
+        
+        // Wichtig: Erst zum Analyser, dann zum Destination
+        audioSource.connect(analyser);
+        analyser.connect(audioContext.destination);
+      }
+    }
+
+    audio.addEventListener('play', () => {
+      if (!audioContext) {
+        initAudio();
+      }
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+      
+      fullscreenPlayer.classList.add('playing');
+      document.querySelector('.vinyl-disc').classList.add('active');
+      updatePlayPauseIcon();
+      requestAnimationFrame(updateVinylVisualization);
+    });
+
+    audio.addEventListener('pause', () => {
+      fullscreenPlayer.classList.remove('playing');
+      document.querySelector('.vinyl-disc').classList.remove('active');
+      updatePlayPauseIcon();
+    });
+
+    function updateVinylVisualization() {
+      if (!audioContext || !analyser || audio.paused) return;
+      
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+      analyser.getByteFrequencyData(dataArray);
+      
+      const average = dataArray.reduce((acc, val) => acc + val, 0) / dataArray.length;
+      const scale = 1 + (average / 512);
+      
+      document.querySelector('.vinyl-disc').style.setProperty('--scale-factor', scale);
+      requestAnimationFrame(updateVinylVisualization);
+    }
+
+    // Entferne alle doppelten Event-Listener und behalte nur die essentiellen
+
   </script>
   <script src="assets/js/functions.js"></script>
   <script src="assets/js/saavn-search.js"></script>
