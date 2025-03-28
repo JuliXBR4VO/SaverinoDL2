@@ -185,18 +185,19 @@ UI Upgrade by JuliXBR4VO
         transparent 360deg
       );
       transform: translate(-50%, -50%);
-      animation: vinylPattern 4s linear infinite;
+      transition: all 0.3s ease;
       opacity: 0;
-      transition: opacity 0.3s ease;
     }
 
-    .fullscreen-player.playing .vinyl-disc::after {
+    .vinyl-disc.active::after {
       opacity: 1;
+      animation: vinylVisualize 2s linear infinite;
     }
 
-    @keyframes vinylPattern {
-      0% { transform: translate(-50%, -50%) rotate(0deg); }
-      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    @keyframes vinylVisualize {
+      0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+      50% { transform: translate(-50%, -50%) rotate(180deg) scale(var(--scale-factor, 1.1)); }
+      100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
     }
     
     .fullscreen-player.playing .vinyl-disc {
@@ -909,12 +910,47 @@ UI Upgrade by JuliXBR4VO
     audio.addEventListener('play', () => {
       fullscreenPlayer.classList.add('playing');
       updatePlayPauseIcon();
+      
+      // Initialisiere Audio Analyzer beim ersten Play
+      if (!audioContext) {
+        setupAudioAnalyzer();
+      }
+      document.querySelector('.vinyl-disc').classList.add('active');
+      updateVinylVisualization();
     });
-    
+
     audio.addEventListener('pause', () => {
       fullscreenPlayer.classList.remove('playing');
       updatePlayPauseIcon();
+      document.querySelector('.vinyl-disc').classList.remove('active');
     });
+
+    // Audio Context und Analyzer Setup
+    let audioContext, analyser, dataArray;
+    
+    function setupAudioAnalyzer() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        const source = audioContext.createMediaElementSource(audio);
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+        
+        analyser.fftSize = 64;
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+      }
+    }
+
+    function updateVinylVisualization() {
+      if (!audioContext || audio.paused) return;
+      
+      analyser.getByteFrequencyData(dataArray);
+      const average = dataArray.reduce((acc, val) => acc + val, 0) / dataArray.length;
+      const scale = 1 + (average / 512); // Normalisierte Skala basierend auf der Lautstärke
+      
+      document.querySelector('.vinyl-disc').style.setProperty('--scale-factor', scale);
+      requestAnimationFrame(updateVinylVisualization);
+    }
     
     // Modal Popup for Downloads Upgrade
     var mpopup = document.getElementById('mpopupBox');
