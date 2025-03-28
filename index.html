@@ -87,6 +87,21 @@ UI Upgrade by JuliXBR4VO
       background-position: center;
       filter: blur(20px);
       z-index: -1;
+      transform-origin: center;
+      animation: bgAnimation 20s ease-in-out infinite alternate;
+    }
+    
+    /* Animation für den Fullscreen-Hintergrund */
+    @keyframes bgAnimation {
+      0% {
+        transform: scale(1.05) rotate(0deg);
+      }
+      50% {
+        transform: scale(1.1) rotate(1deg);
+      }
+      100% {
+        transform: scale(1.05) rotate(-1deg);
+      }
     }
     
     .fullscreen-player.active {
