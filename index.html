@@ -810,57 +810,57 @@ UI Upgrade by JuliXBR4VO
       document.querySelector('.loader-container').style.display = 'none';
     }
     
-    // Basis-Variablen und Audio Setup
+    // 1. Entferne alle vorherigen Audio-Variablen und Event-Listener
+    let hasInitialized = false;
     const audio = document.getElementById('player');
     const fullscreenPlayer = document.querySelector('.fullscreen-player');
-    let audioContext = null;
-    let audioSource = null;
-    let analyser = null;
     
-    // Audio Setup Funktion - wird nur einmal ausgeführt
-    async function initAudioContext() {
-      if (!audioContext) {
-        try {
-          audioContext = new (window.AudioContext || window.webkitAudioContext)();
-          audioSource = audioContext.createMediaElementSource(audio);
-          analyser = audioContext.createAnalyser();
-          analyser.fftSize = 64;
-          
-          // Wichtig: Zuerst zum Destination, dann zum Analyser
-          audioSource.connect(audioContext.destination);
-          audioSource.connect(analyser);
-        } catch (error) {
-          console.error('Audio Setup fehlgeschlagen:', error);
+    // 2. Vereinfachte Audio-Initialisierung
+    async function initAudio() {
+      if (hasInitialized) return;
+      
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const source = audioCtx.createMediaElementSource(audio);
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 64;
+      
+      source.connect(audioCtx.destination); // WICHTIG: Erst Destination!
+      source.connect(analyser);            // Dann Analyser
+      
+      hasInitialized = true;
+      
+      // Vinyl Visualizer Update
+      function updateVisualizer() {
+        if (!audio.paused) {
+          const data = new Uint8Array(analyser.frequencyBinCount);
+          analyser.getByteFrequencyData(data);
+          const scale = 1 + (data.reduce((a,b) => a+b) / (data.length * 512));
+          document.querySelector('.vinyl-disc').style.setProperty('--scale-factor', scale);
+          requestAnimationFrame(updateVisualizer);
         }
       }
       
-      if (audioContext.state === 'suspended') {
-        await audioContext.resume();
-      }
+      return { analyser, updateVisualizer };
     }
-
-    // Audio Event Handler
+    
+    // 3. Vereinfachte Event-Listener
     audio.addEventListener('play', async () => {
-      await initAudioContext(); // Audio Setup sicherstellen
-      fullscreenPlayer.classList.add('playing');
-      document.querySelector('.vinyl-disc').classList.add('active');
-      updatePlayPauseIcon();
-      requestAnimationFrame(updateVinylVisualization);
+      try {
+        const { updateVisualizer } = await initAudio();
+        fullscreenPlayer.classList.add('playing');
+        document.querySelector('.vinyl-disc').classList.add('active');
+        updatePlayPauseIcon();
+        requestAnimationFrame(updateVisualizer);
+      } catch (err) {
+        console.error('Audio init failed:', err);
+      }
     });
 
-    // Rest der Visualizer Funktionalität
-    function updateVinylVisualization() {
-      if (!analyser || audio.paused) return;
-      
-      const dataArray = new Uint8Array(analyser.frequencyBinCount);
-      analyser.getByteFrequencyData(dataArray);
-      
-      const average = dataArray.reduce((acc, val) => acc + val, 0) / dataArray.length;
-      const scale = 1 + (average / 512);
-      
-      document.querySelector('.vinyl-disc').style.setProperty('--scale-factor', scale);
-      requestAnimationFrame(updateVinylVisualization);
-    }
+    audio.addEventListener('pause', () => {
+      fullscreenPlayer.classList.remove('playing');
+      document.querySelector('.vinyl-disc').classList.remove('active');
+      updatePlayPauseIcon();
+    });
 
     // Fullscreen Player
     playerImage.addEventListener('click', () => {
@@ -904,14 +904,6 @@ UI Upgrade by JuliXBR4VO
         '<i class="fas fa-pause"></i>';
     }
 
-    // Audio Events
-    audio.addEventListener('pause', () => {
-      fullscreenPlayer.classList.remove('playing');
-      document.querySelector('.vinyl-disc').classList.remove('active');
-      updatePlayPauseIcon();
-    });
-
-    // Rest der Audio-Funktionen
     // Forward and Backward Controls: skip 10 seconds
     document.getElementById('prev-btn').addEventListener('click', () => {
       audio.currentTime = Math.max(audio.currentTime - 10, 0);
