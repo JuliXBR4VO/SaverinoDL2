@@ -129,9 +129,7 @@ UI Upgrade by JuliXBR4VO
       margin-bottom: 30px;
       transition: all 0.5s ease;
       z-index: 1;
-      /* Upscale album covers smoothly */
-      image-rendering: auto;
-      -ms-interpolation-mode: bicubic;
+      object-fit: cover;  /* Improves cover quality */
     }
 
     .fullscreen-player.playing .fullscreen-cover {
@@ -459,9 +457,7 @@ UI Upgrade by JuliXBR4VO
       box-shadow: 0 5px 15px rgba(0,0,0,0.3);
       cursor: pointer;
       transition: transform 0.3s ease;
-      /* Upscale player image smoothly */
-      image-rendering: auto;
-      -ms-interpolation-mode: bicubic;
+      object-fit: cover;  /* Improves cover quality */
     }
     
     #player-image:hover {
@@ -730,11 +726,17 @@ UI Upgrade by JuliXBR4VO
       const coverSrc = playerImage.src;
       fullscreenCover.src = coverSrc;
       fullscreenTitle.textContent = document.getElementById('player-name').textContent;
-      // Assume the player-album span now contains the artist and album info separated by " - "
-      const albumInfo = document.getElementById('player-album').textContent;
-      const parts = albumInfo.split(' - ');
-      fullscreenArtist.textContent = parts[0] || "";
-      fullscreenAlbum.textContent = parts[1] || "";
+      // Assuming the album element now contains the artist and album separated by " - "
+      const albumText = document.getElementById('player-album').textContent;
+      const parts = albumText.split(' - ');
+      // If two parts are found, first is artist, second is album
+      if(parts.length >= 2) {
+        fullscreenArtist.textContent = parts[0];
+        fullscreenAlbum.textContent = parts[1];
+      } else {
+        fullscreenArtist.textContent = "";
+        fullscreenAlbum.textContent = albumText;
+      }
       // Set the fullscreen background to album cover
       fullscreenPlayer.style.backgroundImage = "url('" + coverSrc + "')";
       fullscreenPlayer.classList.add('active');
