@@ -123,32 +123,39 @@ UI Upgrade by JuliXBR4VO
       opacity: 0;
       transition: all 0.5s ease;
       z-index: 0;
+      overflow: hidden;
     }
     
-    /* Vinyl Markierungen hinzufügen */
-    .vinyl-disc::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 50%;
-      width: 4px;
-      height: 40%;
-      background-color: rgba(255, 255, 255, 0.7);
-      transform: translateX(-50%);
-      transform-origin: bottom center;
-    }
-    
-    /* Zusätzliche Vinyl Markierungen */
+    /* Entfernen der alten Vinyl-Markierungen */
+    /* Neue realistischere Vinyl-Markierungen */
     .vinyl-disc::before {
       content: "";
       position: absolute;
+      width: 100%;
+      height: 100%;
       top: 0;
+      left: 0;
+      background: 
+        radial-gradient(circle at 75% 25%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.6) 2px, transparent 3px),
+        radial-gradient(circle at 25% 75%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.6) 2px, transparent 3px),
+        radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.6) 2px, transparent 3px),
+        radial-gradient(circle at 85% 50%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.6) 2px, transparent 3px),
+        radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.6) 2px, transparent 3px),
+        radial-gradient(circle at 50% 90%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.6) 2px, transparent 3px);
+    }
+    
+    /* Vinyl-Mittelloch */
+    .vinyl-disc::after {
+      content: "";
+      position: absolute;
+      top: 50%;
       left: 50%;
-      width: 3px;
-      height: 30%;
-      background-color: rgba(255, 255, 255, 0.5);
-      transform: translateX(-50%) rotate(120deg);
-      transform-origin: bottom center;
+      width: 30px;
+      height: 30px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
     }
     
     .fullscreen-player.playing .vinyl-disc {
