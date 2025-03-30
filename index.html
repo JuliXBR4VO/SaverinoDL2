@@ -1027,6 +1027,25 @@ UI Upgrade by JuliXBR4VO
           imageContainer.appendChild(img);
         }
         
+        // Neu: Share-Link hinzufügen
+        const shareLink = document.createElement('a');
+        shareLink.textContent = "Share";
+        // Falls song.shareUrl vorhanden ist, ansonsten Standard-URL verwenden
+        shareLink.href = song.shareUrl || window.location.href;
+        shareLink.className = "share-link";
+        shareLink.target = "_blank";
+        container.appendChild(shareLink);
+        
+        // Neu: Copy-Button hinzufügen, um den Link in die Zwischenablage zu kopieren
+        const copyButton = document.createElement('button');
+        copyButton.textContent = "Copy Link";
+        copyButton.className = "copy-button";
+        copyButton.addEventListener('click', (e) => {
+          e.stopPropagation();
+          navigator.clipboard.writeText(song.shareUrl || window.location.href);
+        });
+        container.appendChild(copyButton);
+        
         return container;
       };
     }
