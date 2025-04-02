@@ -23,13 +23,101 @@ UI Upgrade by JuliXBR4VO
       --text-secondary: #b3b3b3;
     }
     
+    /* NEUE GLOBALE STILE – Modernes UI Redesign */
     body {
       font-family: 'Poppins', sans-serif;
-      background: var(--dark-bg);
-      color: var(--text-primary);
-      padding-bottom: 100px;
+      background: #181818; /* schlanker, dunkler Hintergrund */
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+      transition: background 0.3s ease;
     }
     
+    header.header-dark {
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 20px 0;
+      text-align: center;
+      border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .navbar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .navbar-brand {
+      font-size: 32px;
+      font-weight: bold;
+      color: var(--primary-color) !important;
+    }
+    
+    main.container {
+      padding: 20px;
+    }
+    
+    /* Modernisierte Suchleiste */
+    form {
+      margin: 20px auto;
+      max-width: 600px;
+    }
+    .input-group {
+      display: flex;
+      width: 100%;
+    }
+    #saavn-search-box {
+      border: none;
+      border-radius: 50px 0 0 50px;
+      padding: 15px 20px;
+      background: #2c2c2c;
+      color: #fff;
+      flex: 1;
+    }
+    #saavn-search-trigger {
+      border: none;
+      border-radius: 0 50px 50px 0;
+      padding: 15px 25px;
+      background: var(--primary-color);
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    #saavn-search-trigger:hover {
+      background: var(--secondary-color);
+    }
+    
+    /* Modernisierte Container für Ergebnisse */
+    .song-container {
+      background: #242424;
+      border-radius: 10px;
+      margin: 15px 0;
+      padding: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+    }
+    .song-container:hover {
+      transform: translateY(-5px);
+    }
+    
+    /* Footer neu gestalten */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.9);
+      border-top: 2px solid var(--primary-color);
+      font-size: 14px;
+      margin-top: 40px;
+    }
+    
+    /* Anpassung Fullscreen Player (nur optisch) */
+    .fullscreen-player {
+      background: rgba(10, 10, 10, 0.95);
+      padding: 40px;
+      /* ...weitere Anpassungen falls nötig... */
+    }
+    
+    /* Beibehalten: Loader, Modal, etc. */
     /* Loading Animation */
     .loader-container {
       position: fixed;
@@ -273,7 +361,7 @@ UI Upgrade by JuliXBR4VO
     }
     
     .control-btn:hover {
-      background: rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.15);
     }
     
     #play-pause-btn {
@@ -390,30 +478,31 @@ UI Upgrade by JuliXBR4VO
     /* Original styles for the rest of the page */
     .header-dark {
       background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
-      padding: 30px 0;
-      border-radius: 0 0 25px 25px;
-      margin-bottom: 20px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      padding: 40px 0;
+      border-radius: 0 0 30px 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+      transition: background 0.5s ease;
     }
     
     .navbar-brand {
       font-weight: 700;
-      font-size: 24px;
+      font-size: 28px;
       color: white !important;
+      letter-spacing: 1px;
     }
     
     .btn-primary {
-      background-color: var(--primary-color);
-      border-color: var(--primary-color);
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border: none;
       border-radius: 50px;
-      padding: 8px 20px;
-      transition: all 0.3s ease;
+      padding: 10px 25px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     
     .btn-primary:hover {
-      background-color: var(--secondary-color);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(94, 23, 235, 0.3);
+      transform: scale(1.05);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.4);
     }
     
     #saavn-search-box {
@@ -423,10 +512,16 @@ UI Upgrade by JuliXBR4VO
       background: rgba(255,255,255,0.1);
       color: white;
       backdrop-filter: blur(10px);
+      transition: box-shadow 0.3s ease;
     }
     
     #saavn-search-box::placeholder {
       color: rgba(255,255,255,0.6);
+    }
+    
+    #saavn-search-box:focus {
+      outline: none;
+      box-shadow: 0 0 10px rgba(140,82,255,0.6);
     }
     
     #saavn-search-trigger {
@@ -451,8 +546,8 @@ UI Upgrade by JuliXBR4VO
     }
     
     .song-container:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+      transform: translateY(-8px);
+      box-shadow: 0 15px 25px rgba(0,0,0,0.4);
     }
     
     .search-toggle {
@@ -552,6 +647,7 @@ UI Upgrade by JuliXBR4VO
       position: fixed;
       bottom: 100px;
       right: 20px;
+      animation: float 3s ease-in-out infinite;
     }
     
     .float-button:hover {
@@ -573,6 +669,11 @@ UI Upgrade by JuliXBR4VO
       width: 24px;
       height: 24px;
       filter: invert(1);
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
     
     /* Colorful buttons */
@@ -614,6 +715,12 @@ UI Upgrade by JuliXBR4VO
     .image-container {
       position: relative;
       overflow: hidden;
+    }
+    
+    /* Footer Upgrade */
+    .footer {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
     }
   </style>
 </head>
@@ -666,101 +773,73 @@ UI Upgrade by JuliXBR4VO
     </div>
   </div>
 
+  <!-- ÜBERARBEITETER HEADER -->
   <header class="header-dark">
-    <nav class="navbar navbar-dark navbar-expand-lg">
-      <div class="container">
-        <a class="navbar-brand" href="#">Saverino</a>
-        <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navcol-1">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a class="btn btn-primary" role="button" href="https://github.com/wiz64/saavn-web-ui" target="_blank">
-                <i class="fab fa-github me-2"></i>Github
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
+    <nav class="navbar">
+      <a class="navbar-brand" href="#">Saverino</a>
     </nav>
-    <div class="container">
-      <div class="row">
-        <div class="col-md-8 offset-md-2 text-center">
-          <h1 class="mb-2">Saverino</h1>
-          <h3 style="color: rgba(249,255,255,0.9);">Music Player & Downloader</h3>
-          <p>Ad-Free, Metadata, & Modern Design</p>
-        </div>
-      </div>
-    </div>
   </header>
   
-  <div class="container">
-    <div class="text-center mb-3">
-      <select id="saavn-bitrate" class="form-select-sm">
-        <option value="4">320kbps</option>
-        <option value="3" selected="">160kbps</option>
-        <option value="2">96kbps</option>
-        <option value="1">48kbps</option>
-      </select>
-    </div>
-    
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <form class="text-center" action="#" method="get">
-          <div class="input-group mb-3">
-            <input class="form-control" type="text" id="saavn-search-box" placeholder="Enter Name, Year, Artist">
-            <button class="btn btn-primary" id="saavn-search-trigger" type="submit" onclick="SaavnSearch()">
-              <i class="fas fa-search me-1"></i>Search
-            </button>
-          </div>
-        </form>
-        <h5 class="text-uppercase text-center mb-4" style="color: rgb(165,255,184);">Results</h5>
+  <!-- NEUER MAIN-BEREICH -->
+  <main class="container">
+    <!-- Modernisierte Suchleiste -->
+    <form action="#" method="get">
+      <div class="input-group">
+        <input class="form-control" type="text" id="saavn-search-box" placeholder="Suche nach Name, Jahr, Künstler">
+        <button id="saavn-search-trigger" type="submit" onclick="SaavnSearch()">
+          <i class="fas fa-search"></i>
+        </button>
       </div>
-    </div>
+    </form>
     
-    <div id="saavn-results" class="mb-4">
-      <h5>Featured</h5>
-    </div>
+    <!-- Ergebnisse und Button Container bleiben funktional, optisch modernisiert -->
+    <section id="saavn-results" class="mb-4">
+      <h2 style="text-align: center; margin-bottom: 20px;">Featured</h2>
+      <!-- ...existing code for Suchergebnisse... -->
+    </section>
     
     <div class="text-center mb-4">
-      <button id="loadmore" class="btn">Load More</button>
+      <button id="loadmore" class="btn" style="background: var(--primary-color); padding: 10px 20px; border-radius: 50px;">Load More</button>
     </div>
     
     <div class="button-container">
-      <!-- Buttons will be added by JavaScript -->
+      <!-- ...existing Code für dynamisch hinzugefügte Buttons... -->
     </div>
     
-    <p class="footer text-center">
-      This content is not affiliated with, endorsed, sponsored, or specifically approved by any third party music provider like Gaana, Saavn, Spotfy, and is not responsible for any copyright material.[...]
+    <!-- Weitere Funktionsbereiche (Audio-Player etc.) unverändert -->
+    <div id="audio-player">
+      <div class="row align-items-center">
+        <div class="col-auto">
+          <div class="image-container">
+            <div class="image-placeholder">
+              <i class="fas fa-music" style="font-size: 24px; color: var(--primary-color);"></i>
+            </div>
+            <img class="img-fluid lazy-image" id="player-image" style="height: 75px;width: 75px;" data-src="https://i.pinimg.com/originals/ed/54/d2/ed54d2fa700d36d4f2671e1be84651df.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" loading="lazy">
+          </div>
+        </div>
+        <div class="col">
+          <div class="mb-1">
+            <span id="player-name" class="d-inline-block text-truncate" style="max-width: 90%">Song</span>
+            <span id="player-album" class="d-block text-truncate" style="max-width: 90%">Album</span>
+          </div>
+          <audio id="player" controls="controls" controlsList="nodownload" style="width: 100%;height: 30px;">
+            <source id="audioSource" src="">
+            Your browser does not support the audio format.
+          </audio>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- NEU GESTALTETER FOOTER -->
+  <footer class="footer">
+    <p>
+      This content is not affiliated with, endorsed, sponsored, or specifically approved by any third party music provider.[...]
       We don't serve any music on our servers.<br><br>
       Originally by wiz64.<br>
       Re-Designed by JuliXBR4VO
     </p>
-  </div>
-  
-  <div id="audio-player">
-    <div class="row align-items-center">
-      <div class="col-auto">
-        <div class="image-container">
-          <div class="image-placeholder">
-            <i class="fas fa-music" style="font-size: 24px; color: var(--primary-color);"></i>
-          </div>
-          <img class="img-fluid lazy-image" id="player-image" style="height: 75px;width: 75px;" data-src="https://i.pinimg.com/originals/ed/54/d2/ed54d2fa700d36d4f2671e1be84651df.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" loading="lazy">
-        </div>
-      </div>
-      <div class="col">
-        <div class="mb-1">
-          <span id="player-name" class="d-inline-block text-truncate" style="max-width: 90%">Song</span>
-          <span id="player-album" class="d-block text-truncate" style="max-width: 90%">Album</span>
-        </div>
-        <audio id="player" controls="controls" controlsList="nodownload" style="width: 100%;height: 30px;">
-          <source id="audioSource" src="">
-          Your browser does not support the audio format.
-        </audio>
-      </div>
-    </div>
-  </div>
+  </footer>
   
   <!-- floating downloader popup -->
   <div class="float-button">
