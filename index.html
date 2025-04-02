@@ -1358,6 +1358,15 @@ UI Upgrade by JuliXBR4VO
             fullscreenBg.style.backgroundImage = "url('" + actualImageSrc + "')";
         }
     });
+
+    document.addEventListener("DOMContentLoaded", function() {
+      // Prevent default form submission for search to allow AJAX loading of results.
+      const searchForm = document.querySelector("form");
+      searchForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+        SaavnSearch();
+      });
+    });
   </script>
   <script src="assets/js/functions.js"></script>
   <script src="assets/js/saavn-search.js"></script>
